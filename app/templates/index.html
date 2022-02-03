@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div>
+    <h3><img src="{{ url_for('video_feed') }}" ></h3>
+
+    <audio controls>
+        <source src="{{ url_for('audio_feed') }}" type="audio/x-wav;codec=pcm">
+        Your browser does not support the audio element.
+    </audio>
+<!--    <h1>Aloooooo</h1>-->
+<!--    <button id="btn_play">Play</button>-->
+<!--    <audio controls autoplay>-->
+<!--        <source src="rtp://127.0.0.1:5689" type="audio/mp3">-->
+<!--    </audio>-->
+    <!--    <button onclick="player.start()">Start stream</button>-->
+    <!--    <button onclick="player.stop()">Stop stream</button>-->
+
+</div>
+</body>
+<!--<script src="{{ url_for('static', path='dist/ws-audio-api.min.js') }}"></script>-->
+<!--
+<script src="{{ url_for('static', path='src/libopus.js') }}"></script>
+<script src="{{ url_for('static', path='src/opus.js') }}"></script>
+<script src="{{ url_for('static', path='src/xaudio.js') }}"></script>
+<script src="{{ url_for('static', path='src/ws-audio-api.js') }}"></script>
+<script>
+
+    document.querySelector('button').addEventListener('click', function () {
+        // let socket = new WebSocket("ws://127.0.0.1:9909/ws");
+        let player = new WSAudioAPI.Player({
+            codec: {
+                sampleRate: 24000,
+                channels: 1,
+                app: 2049,
+                frameDuration: 5,
+                bufferSize: 1024
+            },
+            server: {
+                host: 'ws://127.0.0.1:9909/ws' // dont't forget about scheme
+            }
+        });
+        player.start();
+    });
+
+
+</script>
+-->
+<!--
+<script>
+    //https://learn.vonage.com/blog/2016/12/19/streaming-calls-to-a-browser-with-voice-websockets-dr/
+    let ws = new WebSocket("ws://127.0.0.1:9909/ws");
+    // ws.binaryType = "arraybuffer";
+
+    let startTime; // Make startTime a global var
+    let count = 0;
+
+    document.querySelector('button').addEventListener('click', function () {
+        let audioContext = new(window.AudioContext || window.webkitAudioContext)();
+        console.log(audioContext);
+
+        ws.onmessage = function (event) {
+            // const uint8View = new Uint8Array(event.data);
+            // console.log(event.data);
+
+            let reader = new FileReader();
+            reader.onload = function () {
+                // console.log(reader.result);
+
+                // On the first message set the startTime to the currentTime from the audio context
+                if (count === 0) {
+                    startTime = audioContext.currentTime;
+                }
+
+                // count++; // Keep a count of how many messages have been received
+                // let playTime = startTime + (count * 0.2) //Play each at file 200ms
+                // playSound(reader.result, playTime); //call the function to play the sample at the appropriate time
+
+
+                audioContext.decodeAudioData(reader.result, function (data) {
+                    count++; // Keep a count of how many messages have been received
+                    let playTime = startTime + (count * 0.2) //Play each at file 200ms
+                    playSound(data, playTime); //call the function to play the sample at the appropriate time
+                });
+
+
+            };
+            reader.readAsArrayBuffer(event.data);
+
+
+            // // On the first message set the startTime to the currentTime from the audio context
+            // if (count === 0) {
+            //     startTime = audioContext.currentTime;
+            // }
+            //
+            // audioContext.decodeAudioData(event.data, function (data) {
+            //     count++; // Keep a count of how many messages have been received
+            //     let playTime = startTime + (count * 0.2) //Play each at file 200ms
+            //     playSound(data, playTime); //call the function to play the sample at the appropriate time
+            // });
+        };
+
+        function playSound(buffer, playTime) {
+            let source = audioContext.createBufferSource(); //Create a new BufferSource fr the
+            console.log(source);
+
+            source.buffer = buffer; // Put the sample content into the buffer
+            // source.connect(analyserNode); //Connect the source to the visualiser
+            source.connect(audioContext.destination); // Also Connect the source to the audio output
+            source.start(playTime); // Set the starting time of the sample to the scheduled play time
+        }
+
+    });
+
+</script>
+-->
+<!--
+<script type="text/javascript" src="{{ url_for('static', path='player.js') }}"></script>
+<script>
+
+    let ws = new WebSocket("ws://127.0.0.1:9909/ws");
+    // ws.binaryType = "arraybuffer";
+
+    // ws.onmessage = function (event) {
+    //     const uint8View = new Uint8Array(event.data);
+    //     const floats = new Float32Array(uint8View.buffer);
+    //
+    // };
+
+    let config = {
+        bufferSize: 1024
+    }
+    let player = new Player(config, ws);
+    console.log(player);
+    // player.play();
+    // console.log(player.isPlaying());
+    // One-liner to resume playback when user interacted with the page.
+    document.querySelector('button').addEventListener('click', function () {
+        player.play();
+        player.audioCtx.resume().then(() => {
+            console.log('Playback resumed successfully');
+        });
+        console.log(player.isPlaying());
+    });
+</script>
+-->
+<!--
+<script>
+    let ws = new WebSocket("ws://127.0.0.1:9909/ws");
+    // ws.binaryType = "arraybuffer";
+
+    const getAudioContext = () => {
+        AudioContext = window.AudioContext || window.webkitAudioContext;
+        return new AudioContext();
+    };
+
+    document.querySelector('button').addEventListener('click', function () {
+        const audioContext = getAudioContext();
+        ws.onmessage = function (event) {
+            // console.log(event.data);
+            // const audioBuffer = audioContext.decodeAudioData(event.data);
+            // console.log(audioBuffer);
+
+            let reader = new FileReader();
+            reader.onload = function () {
+                const audioBuffer = audioContext.decodeAudioData(reader.result);
+                console.log(audioBuffer);
+            }
+            reader.readAsArrayBuffer(event.data);
+
+        }
+
+    });
+
+</script>
+-->
+<!--
+<script>
+    let audioCtx = new AudioContext();
+    let ws = new WebSocket('ws://' + document.domain + ':' + location.port + '/ws');
+    ws.binaryType = "arraybuffer";
+
+    ws.onmessage = function (event) {
+        // console.log(event.data);
+
+        // let pcm_chunks = JSON.parse(event.data);
+        let pcm_chunks = event.data;
+        let node = audioCtx.createBufferSource();
+        let buffer = audioCtx.createBuffer(1, pcm_chunks.byteLength, 44100);
+
+        let data = buffer.getChannelData(0);
+        for (let i = 0; i < pcm_chunks.length; i++) {
+            // Normalize to between -1.0 and 1.0, my PCM was signed 16bit
+            data[i] = pcm_chunks[i] / 32768;
+
+        }
+        node.buffer = buffer;
+        node.loop = false;
+        node.connect(audioCtx.destination);
+        node.start(0);
+    };
+
+</script>
+-->
+</html>
