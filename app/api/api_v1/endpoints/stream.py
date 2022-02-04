@@ -50,8 +50,11 @@ def video_feed():
                 frame = controller.motion_detector.get_frame()
 
             if frame is not None:
+                # yield (b'--frame\r\n'
+                #        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
                 yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+                       b'Content-Type: image/jpeg\r\n\r\n' + bytearray(frame) + b'\r\n')
+
 
     return StreamingResponse(
         gen_video(),
