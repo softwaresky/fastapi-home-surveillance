@@ -9,4 +9,4 @@ if this_dir not in sys.path:
 from app import main
 
 # os.environ["PA_ALSA_PLUGHW"] = "1"
-uvicorn.run(main.app, host='0.0.0.0', port=9909, log_level="info")
+uvicorn.run(main.app, host='0.0.0.0', port=9909, log_level="info", reload=True)
