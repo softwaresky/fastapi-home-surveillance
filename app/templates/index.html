@@ -151,7 +151,7 @@
 </script>
 -->
         <script>
-            var ws = new WebSocket("ws://localhost:9909/api/v1/servo/move-ws");
+            var ws = new WebSocket("ws://0.0.0.0:9909/api/v1/servo/move-ws");
             ws.onmessage = function(event) {
                 console.log(event);
                 console.log(event.data);
