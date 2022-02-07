@@ -10,10 +10,10 @@
 <div>
     <h3><img src="{{ url_for('video_feed') }}" ></h3>
 
-    <audio controls>
-        <source src="{{ url_for('audio_feed') }}" type="audio/x-wav;codec=pcm">
-        Your browser does not support the audio element.
-    </audio>
+<!--    <audio controls>-->
+<!--        <source src="{{ url_for('audio_feed') }}" type="audio/x-wav;codec=pcm">-->
+<!--        Your browser does not support the audio element.-->
+<!--    </audio>-->
 <!--    <h1>Aloooooo</h1>-->
 <!--    <button id="btn_play">Play</button>-->
 <!--    <audio controls autoplay>-->
@@ -150,6 +150,15 @@
     });
 </script>
 -->
+        <script>
+            var ws = new WebSocket("ws://localhost:9909/api/v1/servo/move-ws");
+            ws.onmessage = function(event) {
+                console.log(event);
+                console.log(event.data);
+
+            };
+        </script>
+
 <!--
 <script>
     let ws = new WebSocket("ws://127.0.0.1:9909/ws");
