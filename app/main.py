@@ -153,7 +153,7 @@ def index(request: Request):
     return templates.TemplateResponse("index.html", context={"request": request})
     # return FileResponse(file_path, media_type='text/html')
 
-@app.websocket("/move-ws")
+@app.websocket("/ws")
 async def move_ws(
         websocket: WebSocket,
         servo_ctrl: ServoUpdate
@@ -161,6 +161,11 @@ async def move_ws(
 
     await websocket.accept()
 
-    while True:
-        data = await websocket.receive_json()
-        print (data)
+    try:
+        while True:
+            data = await websocket.receive_json()
+            print(data)
+    except Exception as err:
+        print (err)
+    finally:
+        await websocket.close()
