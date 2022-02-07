@@ -64,7 +64,7 @@ def audio_feed():
         first_run = True
 
         prev_data = b""
-        while True:
+        while controller.noise_detector:
             if first_run:
                 first_run = False
                 data = controller.noise_detector.gen_header() + controller.noise_detector.get_chunk()
