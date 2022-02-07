@@ -9,5 +9,5 @@ if this_dir not in sys.path:
 from app import main
 
 # os.environ["PA_ALSA_PLUGHW"] = "1"
-from pathlib imprt Path
+from pathlib import Path
 uvicorn.run(f"{Path(__file__).stem}:app", host='0.0.0.0', port=9909, log_level="info", reload=True)
