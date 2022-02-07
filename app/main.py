@@ -11,7 +11,6 @@ import asyncio
 from pydantic import BaseModel, ValidationError
 import time
 import threading
-import socketio
 from typing import Any
 # from fastapi_socketio import SocketManager
 from starlette.middleware.cors import CORSMiddleware
@@ -19,6 +18,7 @@ from logging import info
 
 from app.api.api_v1.api import api_router
 from app.core.config import settings
+from app.schemas.servo import ServoUpdate
 
 from app.engine.thread_controller import controller
 
@@ -152,3 +152,15 @@ def index(request: Request):
     file_path = "/static/index.html"
     return templates.TemplateResponse("index.html", context={"request": request})
     # return FileResponse(file_path, media_type='text/html')
+
+@app.websocket("/move-ws")
+async def move_ws(
+        websocket: WebSocket,
+        servo_ctrl: ServoUpdate
+) -> Any:
+
+    await websocket.accept()
+
+    while True:
+        data = await websocket.receive_json()
+        print (data)

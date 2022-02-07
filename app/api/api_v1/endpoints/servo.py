@@ -26,15 +26,3 @@ def move_by_axis(
         "message": "Successfully moved.",
         "data": controller.servo_controller.get_data()
     }
-
-@router.websocket("/move-ws")
-async def move_ws(
-        websocket: WebSocket,
-        servo_ctrl: ServoUpdate
-) -> Any:
-
-    await websocket.accept()
-
-    while True:
-        data = await websocket.receive_json()
-        print (data)
