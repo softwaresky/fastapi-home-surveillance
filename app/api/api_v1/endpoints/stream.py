@@ -8,8 +8,6 @@ from app.engine.thread_controller import controller
 
 router = APIRouter()
 
-# class StreamSettings(BaseModel):
-#     audio_threshold: Optional[float] = 0.005
 
 @router.on_event("startup")
 def startup_router():
