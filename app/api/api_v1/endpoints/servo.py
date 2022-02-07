@@ -8,7 +8,7 @@ from app.schemas.servo import ServoUpdate
 router = APIRouter()
 
 @router.put("/move/")
-def move_by_axis(
+async def move_by_axis(
         servo_ctrl: ServoUpdate
 ) -> Any:
     try:
