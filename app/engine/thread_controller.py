@@ -61,12 +61,13 @@ class ThreadController(ThreadBase):
 
         self.motion_detector.dht_function = self.dht_detector.get_data
         self.motion_detector.servo_is_moving = self.servo_controller.is_moving if self.servo_controller else None
-        self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
-                                                           do_record=self.do_record,
-                                                           use_other_to_record=self.do_merge,
-                                                           audio_format=self.audio_format,
-                                                           observer_length=observer_length,
-                                                           media_dir=self.media_dir)
+        self.noise_detector = None
+        # self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
+        #                                                    do_record=self.do_record,
+        #                                                    use_other_to_record=self.do_merge,
+        #                                                    audio_format=self.audio_format,
+        #                                                    observer_length=observer_length,
+        #                                                    media_dir=self.media_dir)
         self._lst_threads.append(self.noise_detector)
 
         self.media_file_manager = media_file_manager.MediaFileManager()
