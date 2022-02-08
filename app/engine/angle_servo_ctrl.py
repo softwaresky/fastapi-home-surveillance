@@ -17,16 +17,7 @@ def angle_to_duty(ang):
     return round((((ang - ang_range[0]) / ang_span) * pwm_span) + pwm_range[0], 1)
 
 
-# def set_servo_angle(servo, angle, delay=0.3):
-#     pwm = GPIO.PWM(servo, 50)
-#     pwm.start(8)
-#     # dutyCycle = angle / 18. + 3.
-#     duty_cycle = angle_to_duty(angle)
-#     pwm.ChangeDutyCycle(duty_cycle)
-#     time.sleep(delay)
-#     pwm.stop()
-
-def move(servo, angle, delay=0.3):
+def move(servo, angle, delay=0.5):
     GPIO.setmode(GPIO.BOARD)
     GPIO.setwarnings(False)
     GPIO.setup(servo, GPIO.OUT)
