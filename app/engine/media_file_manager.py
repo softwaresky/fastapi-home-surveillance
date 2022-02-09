@@ -71,6 +71,8 @@ class MediaFileManager(ThreadBase):
 
         self.is_running = True
 
+        self.log_manager.log("Ready for execution ...")
+
         while self.is_running:
 
             lst_executed = []
