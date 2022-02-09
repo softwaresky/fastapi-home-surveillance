@@ -45,7 +45,7 @@ class ThreadController(ThreadBase):
         self._lst_threads = []
 
         self.dht_detector = None
-        # self.dht_detector = dht_detector.DhtDetector(dht_pin=dht_pin)
+        self.dht_detector = dht_detector.DhtDetector(dht_pin=dht_pin)
 
         self.servo_controller = None
         self.servo_controller = servo_controller.ServoController(**servo_pin_map)
