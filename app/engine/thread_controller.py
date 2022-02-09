@@ -70,7 +70,7 @@ class ThreadController(ThreadBase):
                                                            media_dir=self.media_dir)
 
         self.media_file_manager = None
-        # self.media_file_manager = media_file_manager.MediaFileManager()
+        self.media_file_manager = media_file_manager.MediaFileManager()
 
         if self.dht_detector: self._lst_threads.append(self.dht_detector)
         if self.servo_controller: self._lst_threads.append(self.servo_controller)
