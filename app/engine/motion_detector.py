@@ -83,9 +83,11 @@ class MotionDetector(ThreadBase):
                                                      use_video_port=True)
 
         self.lst_buffer_data = []
-
+        self.is_running = False
 
     def __del__(self):
+
+        self.is_running = False
 
         if self.stream:
             self.stream.close()
@@ -366,12 +368,10 @@ class MotionDetector(ThreadBase):
             #     previous_frame = frame_blur
 
 
-def main():
-    thread_video = MotionDetector(do_record=True, media_dir=os.path.abspath("../../output/"))
-    # thread_video.daemon = True
-    print(f"{thread_video}: {thread_video.is_alive()}")
-    thread_video.start()
+# def main():
+#     thread_video = MotionDetector(do_record=True, media_dir=os.path.abspath("../../output/"))
+#     print(f"{thread_video}: {thread_video.is_alive()}")
+#     thread_video.start()
 
-
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
