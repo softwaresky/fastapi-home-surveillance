@@ -30,7 +30,9 @@ class DhtDetector(ThreadBase):
         try:
             hum, temp = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, self._pin)
             if hum is not None and temp is not None:
-                return round(temp, 1), round(hum, 1)
+                temp = round(temp, 1)
+                hum = round(hum, 1)
+            return temp, hum
         except Exception as err:
             return random.randrange(40, 60), random.randrange(-10, 40)
 
