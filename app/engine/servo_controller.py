@@ -34,7 +34,7 @@ class Servo:
     def move(self, angle=90.0):
         try:
             delay = cast_delay(angle, self._current_angle)
-            angle_servo_ctrl.move(self._gpio, angle, delay)
+            angle_servo_ctrl.move(self._gpio, angle, 0.5)
             if angle > 180:
                 self._current_angle = 180
             elif angle < 0:

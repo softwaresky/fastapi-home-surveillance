@@ -163,6 +163,8 @@ class ThreadController(ThreadBase):
                     self.media_file_manager.add_item(func=func_, dict_kwargs=dict_kwargs_)
                 self.noise_detector.lst_buffer_data.clear()
 
+    def is_ready(self):
+        return len([thread_ for thread_ in self._lst_threads if not thread_.is_running]) == 0
 
     def run(self):
 
@@ -212,12 +214,14 @@ def main():
     global controller
     controller.start()
 
-    while True:
+    while controller.is_running:
 
         try:
-            input_str = input("Sides and angle: ")
-            sides, angle = _calculate_inputs(input_str=input_str)
-            controller.servo_controller.move(sides=sides, angle=angle)
+
+            if controller.is_ready():
+                input_str = input("Sides and angle: ")
+                sides, angle = _calculate_inputs(input_str=input_str)
+                controller.servo_controller.move(sides=sides, angle=angle)
 
         except KeyboardInterrupt:
             del controller
