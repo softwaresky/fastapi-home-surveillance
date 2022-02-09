@@ -171,6 +171,7 @@ class ThreadController(ThreadBase):
         self.start_children_threads()
         self.is_running = True
 
+        self.log_manager.log(f"Ready for use! {self.is_running}")
         try:
             while self.is_running:
                 self.loop_functions()
@@ -178,8 +179,7 @@ class ThreadController(ThreadBase):
 
         except KeyboardInterrupt as e:
             self.is_running = False
-
-        self.stop_children_threads()
+            self.stop_children_threads()
 
 
 controller = ThreadController(do_record=settings.DO_RECORD,
