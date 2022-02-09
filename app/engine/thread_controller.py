@@ -214,8 +214,7 @@ def main():
     global controller
     controller.start()
 
-    while controller.is_running:
-
+    while True:
         try:
 
             if controller.is_ready():
