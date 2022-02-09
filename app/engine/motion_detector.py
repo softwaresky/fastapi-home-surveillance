@@ -31,6 +31,8 @@ class MotionDetector(ThreadBase):
                  do_record: bool = False,
                  use_other_to_record: bool = False,
                  video_format: str = "mp4",
+                 dht_function=None,
+                 servo_is_moving=None,
                  show_contours = False):
         super(self.__class__, self).__init__()
 
@@ -62,8 +64,8 @@ class MotionDetector(ThreadBase):
         self.last_file = ""
         self.use_other_to_record = use_other_to_record
         self.force_recording = False
-        self.dht_function = None
-        self.servo_is_moving = None
+        self.dht_function = dht_function
+        self.servo_is_moving = servo_is_moving
         self.is_brake = False
 
         # initialize the camera

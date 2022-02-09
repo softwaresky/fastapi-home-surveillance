@@ -44,12 +44,10 @@ class ThreadController(ThreadBase):
         self.current_file = ""
         self._lst_threads = []
 
-        self.dht_detector = None
         self.dht_detector = dht_detector.DhtDetector(dht_pin=dht_pin)
 
         self.servo_controller = None
         self.servo_controller = servo_controller.ServoController(**servo_pin_map)
-        self._lst_threads.append(self.servo_controller)
 
         self.motion_detector = motion_detector.MotionDetector(do_record=self.do_record,
                                                               use_other_to_record=self.do_merge,
@@ -57,11 +55,10 @@ class ThreadController(ThreadBase):
                                                               threshold=motion_threshold,
                                                               observer_length=observer_length,
                                                               media_dir=self.media_dir,
+                                                              dht_function=self.dht_detector.get_data if self.dht_detector else None,
+                                                              servo_is_moving=self.servo_controller.is_moving if self.dht_detector else None,
                                                               show_contours=False)
-        self._lst_threads.append(self.motion_detector)
 
-        self.motion_detector.dht_function = self.dht_detector.get_data if self.dht_detector else None
-        self.motion_detector.servo_is_moving = self.servo_controller.is_moving if self.servo_controller else None
         self.noise_detector = None
         # self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
         #                                                    do_record=self.do_record,
@@ -73,7 +70,13 @@ class ThreadController(ThreadBase):
 
         self.media_file_manager = None
         # self.media_file_manager = media_file_manager.MediaFileManager()
-        # self._lst_threads.append(self.media_file_manager)
+
+        if self.dht_detector: self._lst_threads.append(self.dht_detector)
+        if self.servo_controller: self._lst_threads.append(self.servo_controller)
+        if self.motion_detector: self._lst_threads.append(self.motion_detector)
+        if self.noise_detector: self._lst_threads.append(self.noise_detector)
+        if self.media_file_manager: self._lst_threads.append(self.media_file_manager)
+
         self.fill_do_record()
 
     def stop_children_threads(self):
