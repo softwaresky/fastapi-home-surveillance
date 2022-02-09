@@ -19,7 +19,7 @@ def startup_router():
 
 @api_router.on_event("shutdown")
 def shutdown_router():
-    # controller.stop_children_threads()    # all threads can't be stopped
+    controller.stop_children_threads()    # all threads can't be stopped
     controller.is_running = False
     controller.join()
     pass
