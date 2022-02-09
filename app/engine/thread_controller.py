@@ -188,6 +188,7 @@ def main():
     os.environ["PA_ALSA_PLUGHW"] = "1"
     # thread_controller = ThreadController(media_dir=os.path.abspath("../../output/"))
     time.sleep(1)
+    global controller
     controller.start()
 
     def _calculate_inputs(input_str=""):
@@ -209,6 +210,7 @@ def main():
         try:
             input_str = input("Sides and angle: ")
             sides, angle = _calculate_inputs(input_str=input_str)
+            global controller
             controller.servo_controller.move(sides=sides, angle=angle)
 
         except KeyboardInterrupt:
