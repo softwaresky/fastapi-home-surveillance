@@ -86,7 +86,7 @@ class ThreadController(ThreadBase):
         for thread_ in self._lst_threads:
             if thread_:
                 thread_.is_running = False
-                thread_.join()
+                # thread_.join()
 
     def start_children_threads(self):
 
@@ -150,6 +150,19 @@ class ThreadController(ThreadBase):
             if self.noise_detector:
                 self.noise_detector.force_recording = record_state
 
+        if self.media_file_manager:
+            # Executing functions from motion detector
+            if self.motion_detector and self.motion_detector.lst_buffer_data:
+                for func_, dict_kwargs_ in self.motion_detector.lst_buffer_data:
+                    self.media_file_manager.add_item(func=func_, dict_kwargs=dict_kwargs_)
+                self.motion_detector.lst_buffer_data.clear()
+
+            # Executing functions from noise detector
+            if self.noise_detector and self.noise_detector.lst_buffer_data:
+                for func_, dict_kwargs_ in self.noise_detector.lst_buffer_data:
+                    self.media_file_manager.add_item(func=func_, dict_kwargs=dict_kwargs_)
+                self.noise_detector.lst_buffer_data.clear()
+
 
     def run(self):
 
@@ -157,23 +170,14 @@ class ThreadController(ThreadBase):
         self.is_running = True
 
         try:
-            while self.is_running and self.media_file_manager:
+            while self.is_running:
                 self.loop_functions()
-
-                if self.motion_detector and self.motion_detector.lst_buffer_data:
-                    for func_, dict_kwargs_ in self.motion_detector.lst_buffer_data:
-                        self.media_file_manager.add_item(func=func_, dict_kwargs=dict_kwargs_)
-                    self.motion_detector.lst_buffer_data.clear()
-
-                if self.noise_detector and self.noise_detector.lst_buffer_data:
-                    for func_, dict_kwargs_ in self.noise_detector.lst_buffer_data:
-                        self.media_file_manager.add_item(func=func_, dict_kwargs=dict_kwargs_)
-                    self.noise_detector.lst_buffer_data.clear()
-
                 time.sleep(0.5)
 
         except KeyboardInterrupt as e:
             self.is_running = False
+
+        self.stop_children_threads()
 
 
 controller = ThreadController(do_record=settings.DO_RECORD,

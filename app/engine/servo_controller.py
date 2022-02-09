@@ -124,6 +124,9 @@ class ServoController(ThreadBase):
 
         return dict_result
 
+    def run(self) -> None:
+        self.is_running = True
+
 def main():
 
     def _calculate_inputs(input_str=""):

@@ -254,8 +254,14 @@ class MotionDetector(ThreadBase):
 
         previous_frame_blur = None
 
+        self.is_running = True
+
         # keep looping infinitely until the thread is stopped
         for f in self.stream:
+
+            if not self.is_running:
+                break
+
             # grab the frame from the stream and clear the stream in
             # preparation for the next frame
             frame = f.array

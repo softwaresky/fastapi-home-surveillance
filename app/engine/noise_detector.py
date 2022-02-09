@@ -272,8 +272,11 @@ class NoiseDetector(ThreadBase):
         # self.deque_history = deque(maxlen=self.HISTORY_LENGTH * self.CHUNKS_PER_SEC)
 
         self.log_manager.log("Listening...")
+
+        self.is_running = True
+
         try:
-            while True:
+            while self.is_running:
                 self.chunk = self.stream.read(self.CHUNK_SIZE, exception_on_overflow=False)
 
                 self.deque_history.append(self.chunk)
@@ -287,8 +290,12 @@ class NoiseDetector(ThreadBase):
                 if self.do_record:
                     self.do_recording()
 
+            self.is_running = False
+
         except KeyboardInterrupt:
             self.log_manager.log("Interrupted!")
+            self.is_running = False
+
 
     def do_recording(self):
 

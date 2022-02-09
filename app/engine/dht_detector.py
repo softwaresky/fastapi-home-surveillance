@@ -39,7 +39,9 @@ class DhtDetector(ThreadBase):
 
         self.log_manager.log("Start measurement ...")
 
-        while True:
+        self.is_running = True
+
+        while self.is_running:
             temp, hum  = self.get_dht_data()
 
             self._dict_data = {
@@ -49,3 +51,5 @@ class DhtDetector(ThreadBase):
             }
 
             time.sleep(2)
+
+        self.is_running = False
