@@ -164,6 +164,7 @@ class ThreadController(ThreadBase):
                 self.noise_detector.lst_buffer_data.clear()
 
     def is_ready(self):
+        print ([thread_ for thread_ in self._lst_threads if not thread_.is_running])
         return len([thread_ for thread_ in self._lst_threads if not thread_.is_running]) == 0
 
     def run(self):
@@ -171,7 +172,6 @@ class ThreadController(ThreadBase):
         self.start_children_threads()
         self.is_running = True
 
-        self.log_manager.log(f"Ready for use! {self.is_running}")
         try:
             while self.is_running:
                 self.loop_functions()
