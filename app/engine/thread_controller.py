@@ -44,11 +44,13 @@ class ThreadController(ThreadBase):
         self.current_file = ""
         self._lst_threads = []
 
+        self.dht_detector = None
         self.dht_detector = dht_detector.DhtDetector(dht_pin=dht_pin)
 
         self.servo_controller = None
         self.servo_controller = servo_controller.ServoController(**servo_pin_map)
 
+        self.motion_detector = None
         self.motion_detector = motion_detector.MotionDetector(do_record=self.do_record,
                                                               use_other_to_record=self.do_merge,
                                                               video_format=self.video_format,
@@ -60,12 +62,12 @@ class ThreadController(ThreadBase):
                                                               show_contours=False)
 
         self.noise_detector = None
-        # self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
-        #                                                    do_record=self.do_record,
-        #                                                    use_other_to_record=self.do_merge,
-        #                                                    audio_format=self.audio_format,
-        #                                                    observer_length=observer_length,
-        #                                                    media_dir=self.media_dir)
+        self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
+                                                           do_record=self.do_record,
+                                                           use_other_to_record=self.do_merge,
+                                                           audio_format=self.audio_format,
+                                                           observer_length=observer_length,
+                                                           media_dir=self.media_dir)
 
         self.media_file_manager = None
         # self.media_file_manager = media_file_manager.MediaFileManager()
