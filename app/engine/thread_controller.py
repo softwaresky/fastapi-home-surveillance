@@ -44,8 +44,9 @@ class ThreadController(ThreadBase):
         self.current_file = ""
         self._lst_threads = []
 
+        self.dht_detector = None
+        # self.dht_detector = dht_detector.DhtDetector(dht_pin=dht_pin)
 
-        self.dht_detector = dht_detector.DhtDetector(dht_pin=dht_pin)
         self.servo_controller = None
         self.servo_controller = servo_controller.ServoController(**servo_pin_map)
         self._lst_threads.append(self.servo_controller)
@@ -59,7 +60,7 @@ class ThreadController(ThreadBase):
                                                               show_contours=False)
         self._lst_threads.append(self.motion_detector)
 
-        self.motion_detector.dht_function = self.dht_detector.get_data
+        self.motion_detector.dht_function = self.dht_detector.get_data if self.dht_detector else None
         self.motion_detector.servo_is_moving = self.servo_controller.is_moving if self.servo_controller else None
         self.noise_detector = None
         # self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
@@ -68,10 +69,11 @@ class ThreadController(ThreadBase):
         #                                                    audio_format=self.audio_format,
         #                                                    observer_length=observer_length,
         #                                                    media_dir=self.media_dir)
-        self._lst_threads.append(self.noise_detector)
+        # self._lst_threads.append(self.noise_detector)
 
-        self.media_file_manager = media_file_manager.MediaFileManager()
-        self._lst_threads.append(self.media_file_manager)
+        self.media_file_manager = None
+        # self.media_file_manager = media_file_manager.MediaFileManager()
+        # self._lst_threads.append(self.media_file_manager)
         self.fill_do_record()
 
     def stop_children_threads(self):
@@ -131,7 +133,7 @@ class ThreadController(ThreadBase):
                 if self.noise_detector:
                     self.noise_detector.current_file = os.path.join(dir_name, f".{base_name}_audio.{self.audio_format}")
 
-                if self.motion_detector and self.noise_detector:
+                if self.motion_detector and self.noise_detector and self.media_file_manager:
                     self.media_file_manager.add_item(func=media_file_manager.MediaFileManager.merge_video_and_audio,
                                                      dict_kwargs={
                                                          "video_file": self.motion_detector.current_file,
@@ -151,7 +153,7 @@ class ThreadController(ThreadBase):
         self.is_running = True
 
         try:
-            while self.is_running:
+            while self.is_running and self.media_file_manager:
                 self.loop_functions()
 
                 if self.motion_detector and self.motion_detector.lst_buffer_data:
@@ -181,12 +183,12 @@ controller = ThreadController(do_record=settings.DO_RECORD,
                               dht_pin=settings.DHT_PIN)
 
 
-# def main():
-#
-#     os.environ["PA_ALSA_PLUGHW"] = "1"
-#     thread_controller = ThreadController(do_record=False, is_merged=True, media_dir=os.path.abspath("../../output/"))
-#     time.sleep(1)
-#     thread_controller.start()
-#     # thread_controller.run()
-#
-# main()
+def main():
+
+    os.environ["PA_ALSA_PLUGHW"] = "1"
+    # thread_controller = ThreadController(media_dir=os.path.abspath("../../output/"))
+    time.sleep(1)
+    controller.start()
+    # thread_controller.run()
+
+main()
