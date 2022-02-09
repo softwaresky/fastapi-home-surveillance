@@ -242,6 +242,8 @@ class MotionDetector(ThreadBase):
 
     def run(self) -> None:
 
+        self.is_running = False
+
         self.log_manager.log("Camera preparing...")
         self.camera.start_preview()
         time.sleep(2)
