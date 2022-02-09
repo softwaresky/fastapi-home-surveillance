@@ -66,7 +66,6 @@ class ThreadController(ThreadBase):
         #                                                    audio_format=self.audio_format,
         #                                                    observer_length=observer_length,
         #                                                    media_dir=self.media_dir)
-        # self._lst_threads.append(self.noise_detector)
 
         self.media_file_manager = None
         # self.media_file_manager = media_file_manager.MediaFileManager()

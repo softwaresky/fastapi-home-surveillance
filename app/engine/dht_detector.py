@@ -1,6 +1,7 @@
 import random
 import time
 import datetime
+from app.engine import utils
 
 try:
     import Adafruit_DHT
@@ -18,6 +19,7 @@ class DhtDetector(ThreadBase):
         self._dict_data = {"temperature": 0.0,
                           "humidity": 0.0}
         self._pin = dht_pin
+        self.log_manager = utils.LogManager(self.name)
 
 
     def get_data(self):
@@ -34,6 +36,8 @@ class DhtDetector(ThreadBase):
 
 
     def run(self):
+
+        self.log_manager.log("Start measurement ...")
 
         while True:
             temp, hum  = self.get_dht_data()
