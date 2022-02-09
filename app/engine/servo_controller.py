@@ -124,25 +124,42 @@ class ServoController(ThreadBase):
 
         return dict_result
 
-    # def loop_inputs(self):
-    #
-    #     try:
-    #         while True:
-    #             key_input = input("Key input: ").lower()
-    #             for char_ in key_input:
-    #                 self.move_by_sides(key_name=char_)
-    #     except KeyboardInterrupt:
-    #         del self
-    #         pass
+def main():
+
+    def _calculate_inputs(input_str=""):
+        input_str = input_str.strip()
+        split_input = input_str.split(" ")
+        sides = input_str
+        angle = None
+        if len(split_input) == 2:
+            sides = split_input[0]
+            angle = split_input[-1]
+            if angle.isdigit():
+                angle = int(angle)
+
+        return sides, angle
+
+    dict_pins = {
+        "pan_pin": 11,
+        "tilt_pin": 18
+    }
 
 
-#
-# def main():
-#     # servo_ctl = ServoController(axis_order="zy", orient=(-1, 1))
-#     servo_ctl = ServoController()
-#     servo_ctl.loop_inputs()
-#     pass
-#
-# if __name__ == '__main__':
-#     main()
-#
+    servo_controller = ServoController(**dict_pins)
+    servo_controller.start()
+
+    while True:
+
+        try:
+            input_str = input("Sides and angle: ")
+            sides, angle = _calculate_inputs(input_str=input_str)
+            servo_controller.move(sides=sides, angle=angle)
+
+        except KeyboardInterrupt:
+            del servo_controller
+            break
+
+
+
+if __name__ == '__main__':
+    main()
