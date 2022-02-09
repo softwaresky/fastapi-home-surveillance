@@ -189,6 +189,31 @@ def main():
     # thread_controller = ThreadController(media_dir=os.path.abspath("../../output/"))
     time.sleep(1)
     controller.start()
-    # thread_controller.run()
+
+    def _calculate_inputs(input_str=""):
+        input_str = input_str.strip()
+        split_input = input_str.split(" ")
+        sides = input_str
+        angle = None
+        if len(split_input) == 2:
+            sides = split_input[0]
+            angle = split_input[-1]
+            if angle.isdigit():
+                angle = int(angle)
+
+        return sides, angle
+
+
+    while True:
+
+        try:
+            input_str = input("Sides and angle: ")
+            sides, angle = _calculate_inputs(input_str=input_str)
+            controller.servo_controller.move(sides=sides, angle=angle)
+
+        except KeyboardInterrupt:
+            del controller
+            break
+
 
 main()
