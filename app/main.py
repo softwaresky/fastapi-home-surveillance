@@ -19,7 +19,7 @@ from logging import info
 from app.api.api_v1.api import api_router
 from app.core.config import settings
 from app.schemas.servo import ServoUpdate
-
+from app.engine import utils
 from app.engine.thread_controller import controller
 
 app = FastAPI(
@@ -36,7 +36,11 @@ app = FastAPI(
 # app.add_route("/socket.io/", route=sio_asgi_app, methods=['GET', 'POST'])
 # app.add_websocket_route("/socket.io/", sio_asgi_app)
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+static_dir = utils.get_static_dir()
+print (f"static_dir: {static_dir}")
+
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # add CORS so our web page can connect to our api

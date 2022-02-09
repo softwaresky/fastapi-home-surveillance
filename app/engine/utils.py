@@ -1,6 +1,7 @@
 import json
 import datetime
 import logging
+import os
 
 def sizeof_fmt(num, suffix='B'):
     """Readable file size
@@ -41,3 +42,12 @@ class LogManager:
 
     def error(self, msg=""):
         self.logger.error(msg)
+
+def get_static_dir(root_dir="."):
+
+    for root, dirs, files in os.walk(root_dir, topdown=True):
+        for name in dirs:
+            if "static" == name:
+                return os.path.join(root, name)
+
+    return ""
