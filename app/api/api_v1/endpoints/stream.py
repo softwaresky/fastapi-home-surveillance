@@ -8,22 +8,6 @@ from app.engine.thread_controller import controller
 
 router = APIRouter()
 
-
-@router.on_event("startup")
-def startup_router():
-    time.sleep(1)
-    controller.start()
-    pass
-
-
-@router.on_event("shutdown")
-def shutdown_router():
-    # controller.stop_children_threads()    # all threads can't be stopped
-    controller.is_running = False
-    controller.join()
-    pass
-
-
 @router.post("/switch-record-state")
 def switch_record_state():
     controller.switch_record_state()
