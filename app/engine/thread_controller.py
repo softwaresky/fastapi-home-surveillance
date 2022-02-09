@@ -164,7 +164,6 @@ class ThreadController(ThreadBase):
                 self.noise_detector.lst_buffer_data.clear()
 
     def is_ready(self):
-        print ([thread_ for thread_ in self._lst_threads if not thread_.is_running])
         return len([thread_ for thread_ in self._lst_threads if not thread_.is_running]) == 0
 
     def run(self):
