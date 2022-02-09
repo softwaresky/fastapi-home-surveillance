@@ -43,11 +43,11 @@ class LogManager:
     def error(self, msg=""):
         self.logger.error(msg)
 
-def get_static_dir(root_dir="."):
+def get_dir_path_in_app(root_dir=".", target_dir=""):
 
     for root, dirs, files in os.walk(root_dir, topdown=True):
         for name in dirs:
-            if "static" == name:
+            if target_dir == name:
                 return os.path.join(root, name)
 
     return ""

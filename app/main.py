@@ -37,11 +37,11 @@ app = FastAPI(
 # app.add_websocket_route("/socket.io/", sio_asgi_app)
 
 
-static_dir = utils.get_static_dir()
-print (f"static_dir: {static_dir}")
-
+static_dir = utils.get_dir_path_in_app(target_dir="static")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
-templates = Jinja2Templates(directory="templates")
+
+template_dir = utils.get_dir_path_in_app(target_dir="templates")
+templates = Jinja2Templates(directory=template_dir)
 
 # add CORS so our web page can connect to our api
 app.add_middleware(
