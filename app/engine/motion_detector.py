@@ -85,6 +85,8 @@ class MotionDetector(ThreadBase):
         self.lst_buffer_data = []
         self.is_running = False
 
+        self.log_manager.log(f"do record: {self.do_record}")
+
     def __del__(self):
 
         self.is_running = False
