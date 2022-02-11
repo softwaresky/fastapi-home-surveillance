@@ -176,7 +176,7 @@ class NoiseDetector(ThreadBase):
             rms = self.get_rms(block)
             lst_res.append(rms)
 
-        threshold = (sum(lst_res) / len(lst_res)) * 1.2
+        threshold = (sum(lst_res) / len(lst_res)) * 2
 
         self.log_manager.log("Setting threshold to: {0}".format(threshold))
 
