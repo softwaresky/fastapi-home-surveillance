@@ -20,7 +20,7 @@ class Settings(BaseSettings):
         # "pan_pin": 11, # BOARD
         "pan_pin": 17, # BCM
         # "tilt_pin": 18 # BOARD
-        "tilt_pin": 24 # BOARD
+        "tilt_pin": 24 # BCM
     }
 
     DHT_PIN = 4
