@@ -2,7 +2,7 @@ from app.engine import utils
 from app.engine import angle_servo_ctrl
 from app.engine.base_class import ThreadBase
 import numpy as np
-import gpiozero
+from gpiozero import Servo as GpioServo
 from gpiozero.pins.pigpio import PiGPIOFactory
 
 factory = PiGPIOFactory()
@@ -40,7 +40,7 @@ class Servo:
         self._current_angle = 90
         self.angle_step = round(180/angle_steps, 1)
         self.move(angle=90)
-        self.motor = gpiozero.Servo(self._gpio, pin_factory=factory)
+        self.motor = GpioServo(self._gpio, pin_factory=factory)
 
     def __repr__(self):
         return f"Servo: [{self._gpio}] GPIO"
