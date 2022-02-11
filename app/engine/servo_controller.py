@@ -60,7 +60,8 @@ class Servo:
             # print (f"angle: {angle}")
             # print (f"scaled_value: {scaled_value}")
             # angle_servo_ctrl.move(self._gpio, angle, 0.5)
-            scaled_value = utils.scale_value_by_range(value=angle, scaled_range=(2.0, 12.0))
+            scaled_value = utils.scale_value_by_range(value=angle, scaled_range=(-1.0, 1.0))
+            scaled_value = round(scaled_value, 1)
             print (f"scaled_value: {scaled_value}")
             self.motor.value = scaled_value
 
