@@ -7,18 +7,19 @@ from gpiozero.pins.pigpio import PiGPIOFactory
 
 factory = PiGPIOFactory()
 
-
 AXIS_WORLD = "yz"
-DICT_DIRECTION_MAP = {"N": ("z", -1),   # North
-                      "S": ("z", 1),    # South
-                      "E": ("y", -1),   # East
-                      "W": ("y", 1)     # West
+DICT_DIRECTION_MAP = {"N": ("z", -1),  # North
+                      "S": ("z", 1),  # South
+                      "E": ("y", -1),  # East
+                      "W": ("y", 1)  # West
                       }
+
 
 # optimizing the delay to reduce jitter
 def cast_delay(ang, prev_ang):
     # minimum delay using max speed 0.1s/60 deg
     return (10.0 / 6.0) * (abs(ang - prev_ang)) / 1000.0
+
 
 def angle_to_duty(ang):
     # mapping duty cycle to angle
@@ -32,6 +33,7 @@ def angle_to_duty(ang):
     # print('Duty Cycle: '+str(round((((ang - ang_range[0])/ang_span)*pwm_span)+pwm_range[0],1)))
     return round((((ang - ang_range[0]) / ang_span) * pwm_span) + pwm_range[0], 1)
 
+
 class Servo:
 
     def __init__(self, gpio=-1, angle_steps=6):
@@ -39,9 +41,8 @@ class Servo:
         self._gpio = gpio
         self.motor = gpiozero.Servo(self._gpio, pin_factory=factory)
         self._current_angle = 90
-        self.angle_step = round(180/angle_steps, 1)
+        self.angle_step = round(180 / angle_steps, 1)
         self.move(angle=90)
-
 
     def __repr__(self):
         return f"Servo: [{self._gpio}] GPIO"
@@ -99,7 +100,7 @@ class ServoController(ThreadBase):
 
     def get_axis_direction(self, side=""):
 
-        axis, direction = DICT_DIRECTION_MAP.get(side, ("",0))
+        axis, direction = DICT_DIRECTION_MAP.get(side, ("", 0))
 
         if self.axis_order != AXIS_WORLD:
             if axis in AXIS_WORLD:
@@ -150,8 +151,8 @@ class ServoController(ThreadBase):
     def run(self) -> None:
         self.is_running = True
 
-def main():
 
+def main():
     def _calculate_inputs(input_str=""):
         input_str = input_str.strip()
         split_input = input_str.split(" ")
@@ -166,10 +167,11 @@ def main():
         return sides, angle
 
     dict_pins = {
-        "pan_pin": 11,
-        "tilt_pin": 18
+        # "pan_pin": 11, # BOARD
+        "pan_pin": 17,  # BCM
+        # "tilt_pin": 18 # BOARD
+        "tilt_pin": 24  # BOARD
     }
-
 
     servo_controller = ServoController(**dict_pins)
     servo_controller.start()
