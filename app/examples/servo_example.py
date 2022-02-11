@@ -3,7 +3,7 @@ from gpiozero.pins.pigpio import PiGPIOFactory
 from time import sleep
 
 factory = PiGPIOFactory()
-servo = Servo(0, pin_factory=factory)
+servo = Servo(17)
 
 while True:
     servo.min()
