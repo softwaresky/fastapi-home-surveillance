@@ -91,29 +91,27 @@ class ServoController(ThreadBase):
 
     def move_by_sides(self, sides=""):
 
-        self._is_moving = True
         for side_ in sides:
             axis, direction = self.get_axis_direction(side=side_.upper())
             if axis in self.dict_servos:
                 self.dict_servos[axis].move_by_step(direction=direction)
             self.log_manager.log(f"axis: {axis}, direction: {direction}")
-        self._is_moving = False
 
     def move_by_axis(self, axis="", angle=None):
 
-        self._is_moving = True
         if axis in self.dict_servos:
             if angle is not None:
                 self.dict_servos[axis].move(angle=angle)
                 self.log_manager.log(f"axis: {axis}, angle: {angle}")
-        self._is_moving = False
 
     def move(self, sides="", angle=None):
 
+        self._is_moving = True
         if list(set(sides) & set(DICT_DIRECTION_MAP.keys())):
             self.move_by_sides(sides=sides)
         elif list(set(sides) & set(AXIS_WORLD)) and angle is not None:
             self.move_by_axis(axis=sides, angle=angle)
+        self._is_moving = False
 
     def get_data(self):
 
@@ -163,7 +161,6 @@ def main():
         except KeyboardInterrupt:
             del servo_controller
             break
-
 
 # if __name__ == '__main__':
 #     main()
