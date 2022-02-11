@@ -144,7 +144,6 @@ class NoiseDetector(ThreadBase):
         self._value = 0.0
         self.current_file = ""
         self.last_file = ""
-        self.deque_history = deque(maxlen=self.HISTORY_LENGTH * self.CHUNKS_PER_SEC)
         self.deque_observer = deque(maxlen=self.observer_length * self.CHUNKS_PER_SEC)
         self.lst_buffer_data = []
 
@@ -271,7 +270,6 @@ class NoiseDetector(ThreadBase):
     def run(self):
 
         # deque_observer = deque(maxlen=self.observer_length * self.CHUNKS_PER_SEC)
-        # self.deque_history = deque(maxlen=self.HISTORY_LENGTH * self.CHUNKS_PER_SEC)
 
         self.log_manager.log("Listening...")
 
@@ -280,22 +278,19 @@ class NoiseDetector(ThreadBase):
         try:
             while self.is_running:
 
-                if self.servo_is_moving and self.servo_is_moving():
-                    self.deque_observer.clear()
-                    self.deque_history.clear()
-                    continue
-
                 self.chunk = self.stream.read(self.CHUNK_SIZE, exception_on_overflow=False)
 
-                self.deque_history.append(self.chunk)
-
-                rms = self.get_rms(self.chunk)
-                self.deque_observer.append(rms)
-
-                self._value = rms
-                self.detect_noise = sum([x > self.threshold for x in self.deque_observer]) > 0
-
                 if self.do_record:
+
+                    if self.servo_is_moving and self.servo_is_moving():
+                        self.deque_observer.clear()
+                        continue
+
+                    rms = self.get_rms(self.chunk)
+                    self.deque_observer.append(rms)
+
+                    self._value = rms
+                    self.detect_noise = sum([x > self.threshold for x in self.deque_observer]) > 0
                     self.do_recording()
 
             self.is_running = False

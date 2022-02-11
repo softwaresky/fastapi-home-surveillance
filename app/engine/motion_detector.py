@@ -278,11 +278,6 @@ class MotionDetector(ThreadBase):
             if not isinstance(frame, np.ndarray):
                 continue
 
-            if self.servo_is_moving and self.servo_is_moving():
-                deque_observer.clear()
-                previous_frame_blur = None
-                continue
-
             self.current_frame = frame
             # self.current_frame = cv2.flip(frame, 0)
             self.current_timestamp = time.time()
@@ -298,6 +293,12 @@ class MotionDetector(ThreadBase):
 
 
             if self.do_record:
+
+                if self.servo_is_moving and self.servo_is_moving():
+                    deque_observer.clear()
+                    previous_frame_blur = None
+                    continue
+
                 frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
 
