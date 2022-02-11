@@ -18,9 +18,9 @@ class Settings(BaseSettings):
 
     SERVO_PIN_MAP: Optional[dict] = {
         # "pan_pin": 11, # BOARD
-        "pan_pin": 17, # BCM
+        "pan_pin": 13, # BCM
         # "tilt_pin": 18 # BOARD
-        "tilt_pin": 24 # BCM
+        "tilt_pin": 12 # BCM
     }
 
     DHT_PIN = 4
