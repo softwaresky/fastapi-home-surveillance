@@ -1,3 +1,5 @@
+import time
+
 from app.engine import utils
 from app.engine.base_class import ThreadBase
 import gpiozero
@@ -111,6 +113,7 @@ class ServoController(ThreadBase):
             self.move_by_sides(sides=sides)
         elif list(set(sides) & set(AXIS_WORLD)) and angle is not None:
             self.move_by_axis(axis=sides, angle=angle)
+        time.sleep(.3)
         self._is_moving = False
 
     def get_data(self):

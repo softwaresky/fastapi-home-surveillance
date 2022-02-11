@@ -278,7 +278,7 @@ class MotionDetector(ThreadBase):
                 continue
 
             if self.servo_is_moving and self.servo_is_moving():
-                # deque_observer.clear()
+                deque_observer.clear()
                 continue
 
             self.current_frame = frame
