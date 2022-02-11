@@ -277,6 +277,7 @@ class MotionDetector(ThreadBase):
             if not isinstance(frame, np.ndarray):
                 continue
 
+            print (f"self.servo_is_moving: {self.servo_is_moving}")
             if self.servo_is_moving and self.servo_is_moving():
                 continue
 
