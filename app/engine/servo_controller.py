@@ -73,8 +73,8 @@ class ServoController(ThreadBase):
             self.log_manager.log(f"{axis_}: {self.dict_servos[axis_]}")
 
     def is_moving(self):
-        return len([item_ for item_ in self.dict_servos.values() if item_.motor.is_active]) > 0
-        # return self._is_moving
+        # return len([item_ for item_ in self.dict_servos.values() if item_.motor.is_active]) > 0
+        return self._is_moving
 
     def get_axis_direction(self, side=""):
 
