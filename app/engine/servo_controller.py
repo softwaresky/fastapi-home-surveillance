@@ -39,7 +39,7 @@ class Servo:
     def __init__(self, gpio=-1, angle_steps=6):
 
         self._gpio = gpio
-        self.motor = gpiozero.AngularServo(self._gpio, pin_factory=factory, min_angle=0, max_angle=180,
+        self.motor = gpiozero.AngularServo(self._gpio, pin_factory=factory, min_angle=0, max_angle=180.0,
                                            min_pulse_width=0.0006, max_pulse_width=0.0024)
         self._current_angle = 90
         self.angle_step = round(180 / angle_steps, 1)
@@ -52,24 +52,30 @@ class Servo:
     def value(self):
         return self._current_angle
 
-    def move(self, angle=90.0):
+    def move_old(self, angle=90.0):
         try:
             # delay = cast_delay(angle, self._current_angle)
             # value = angle_to_duty(angle)
-            # scaled_value = utils.scale_value_by_range(value=angle, scaled_range=(2.0, 12.0))
-            # scaled_value = round(scaled_value, 1)
-            # print (f"angle: {angle}")
-            # print (f"scaled_value: {scaled_value}")
-            # angle_servo_ctrl.move(self._gpio, angle, 0.5)
-            # scaled_value = utils.scale_value_by_range(value=angle, scaled_range=(-1.0, 1.0))
-            # scaled_value = round(scaled_value, 1)
-            print (f"scaled_value: {angle}")
-            self.motor.angle = angle
+            angle_servo_ctrl.move(self._gpio, angle, 0.5)
 
             if angle > 180:
                 self._current_angle = 180
             elif angle < 0:
                 self._current_angle = 0
+            else:
+                self._current_angle = angle
+            return True
+        except ValueError:
+            return False
+
+    def move(self, angle=90.0):
+        try:
+            self.motor.angle = angle
+
+            if angle > self.motor.max():
+                self._current_angle = self.motor.max()
+            elif angle < self.motor.min():
+                self._current_angle = self.motor.min()
             else:
                 self._current_angle = angle
             return True
