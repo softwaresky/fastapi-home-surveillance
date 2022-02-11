@@ -39,7 +39,7 @@ class Servo:
             elif angle < self.motor.min_angle:
                 self._current_angle = self.motor.min_angle
             else:
-                self._current_angle = int(angle)
+                self._current_angle = round(angle, 1)
             self.motor.angle = self._current_angle
 
             return True
