@@ -72,10 +72,10 @@ class Servo:
         try:
             self.motor.angle = angle
 
-            if angle > self.motor.max():
-                self._current_angle = self.motor.max()
-            elif angle < self.motor.min():
-                self._current_angle = self.motor.min()
+            if angle > self.motor.max_angle:
+                self._current_angle = self.motor.max_angle
+            elif angle < self.motor.min_angle:
+                self._current_angle = self.motor.min_angle
             else:
                 self._current_angle = angle
             return True
