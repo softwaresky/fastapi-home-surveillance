@@ -39,7 +39,7 @@ class Servo:
     def __init__(self, gpio=-1, angle_steps=6):
 
         self._gpio = gpio
-        self.motor = gpiozero.AngularServo(self._gpio, min_angle=1.0, max_angle=179.0, pin_factory=factory)
+        self.motor = gpiozero.AngularServo(self._gpio, min_angle=0.0, max_angle=179.0, pin_factory=factory)
         self._current_angle = 90
         self.angle_step = round(180 / angle_steps, 1)
         self.move(angle=90)
