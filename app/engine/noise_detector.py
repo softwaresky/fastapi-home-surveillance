@@ -110,7 +110,8 @@ class NoiseDetector(ThreadBase):
                  media_dir: str = "",
                  audio_format: str = "wav",
                  observer_length: int = 5,
-                 threshold: float = 0.005):
+                 threshold: float = 0.005,
+                 servo_is_moving=None):
 
         super(self.__class__, self).__init__()
 
@@ -132,6 +133,7 @@ class NoiseDetector(ThreadBase):
         self.stream = self.get_stream()
         # self.threshold = self.determine_threshold()
         self.threshold = threshold
+        self.servo_is_moving = servo_is_moving
         self.detect_noise = False
         self.records = []
         self.do_record = do_record
@@ -277,6 +279,12 @@ class NoiseDetector(ThreadBase):
 
         try:
             while self.is_running:
+
+                if self.servo_is_moving and self.servo_is_moving():
+                    self.deque_observer.clear()
+                    self.deque_history.clear()
+                    continue
+
                 self.chunk = self.stream.read(self.CHUNK_SIZE, exception_on_overflow=False)
 
                 self.deque_history.append(self.chunk)

@@ -22,6 +22,7 @@ class ThreadController(ThreadBase):
                  motion_threshold: float = 7.0,
                  observer_length: int = 5,
                  servo_pin_map=None,
+                 noise_threshold=0.005,
                  dht_pin=4):
 
         super(self.__class__, self).__init__()
@@ -67,6 +68,7 @@ class ThreadController(ThreadBase):
                                                            use_other_to_record=self.do_merge,
                                                            audio_format=self.audio_format,
                                                            observer_length=observer_length,
+                                                           threshold=noise_threshold,
                                                            media_dir=self.media_dir)
 
         self.media_file_manager = None
@@ -187,6 +189,7 @@ controller = ThreadController(do_record=settings.DO_RECORD,
                               video_format=settings.VIDEO_FORMAT,
                               audio_format=settings.AUDIO_FORMAT,
                               motion_threshold=settings.MOTION_THRESHOLD,
+                              noise_threshold=settings.NOISE_THRESHOLD,
                               observer_length=settings.OBSERVER_LENGTH,
                               servo_pin_map=settings.SERVO_PIN_MAP,
                               dht_pin=settings.DHT_PIN)
