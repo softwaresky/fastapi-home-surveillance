@@ -277,8 +277,9 @@ class MotionDetector(ThreadBase):
             if not isinstance(frame, np.ndarray):
                 continue
 
-            # if self.servo_is_moving and self.servo_is_moving():
-            #     continue
+            if self.servo_is_moving and self.servo_is_moving():
+                # deque_observer.clear()
+                continue
 
             self.current_frame = frame
             # self.current_frame = cv2.flip(frame, 0)
