@@ -290,7 +290,8 @@ class NoiseDetector(ThreadBase):
                     self.deque_observer.append(rms)
 
                     self._value = rms
-                    self.detect_noise = sum([x > self.threshold for x in self.deque_observer]) > 0
+                    # self.detect_noise = sum([x > self.threshold for x in self.deque_observer]) > 0
+                    self.detect_noise = False
                     self.do_recording()
 
             self.is_running = False

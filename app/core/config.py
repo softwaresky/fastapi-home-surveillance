@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     MEDIA_DIR: Optional[str] = os.path.abspath("./output/")
     MOTION_THRESHOLD: Optional[float] = 7.0
-    NOISE_THRESHOLD: Optional[float] = 0.1
+    NOISE_THRESHOLD: Optional[float] = 1.0 # default was 0.005
     DO_RECORD: Optional[bool] = True
     DO_MERGE: Optional[bool] = True
     VIDEO_FORMAT: Optional[str] = "mp4"
