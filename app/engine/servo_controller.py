@@ -2,6 +2,12 @@ from app.engine import utils
 from app.engine import angle_servo_ctrl
 from app.engine.base_class import ThreadBase
 
+import gpiozero
+from gpiozero.pins.pigpio import PiGPIOFactory
+
+factory = PiGPIOFactory()
+
+
 AXIS_WORLD = "yz"
 DICT_DIRECTION_MAP = {"N": ("z", -1),   # North
                       "S": ("z", 1),    # South
@@ -14,6 +20,17 @@ def cast_delay(ang, prev_ang):
     # minimum delay using max speed 0.1s/60 deg
     return (10.0 / 6.0) * (abs(ang - prev_ang)) / 1000.0
 
+def angle_to_duty(ang):
+    # mapping duty cycle to angle
+    pwm_range = np.linspace(2.0, 12.0)
+    pwm_span = pwm_range[-1] - pwm_range[0]
+    ang_range = np.linspace(0.0, 180.0)
+    ang_span = ang_range[-1] - ang_range[0]
+
+    # rounding to approx 0.01 - the max resolution
+    # (based on 10-bits, 2%-12% PWM period)
+    # print('Duty Cycle: '+str(round((((ang - ang_range[0])/ang_span)*pwm_span)+pwm_range[0],1)))
+    return round((((ang - ang_range[0]) / ang_span) * pwm_span) + pwm_range[0], 1)
 
 class Servo:
 
@@ -23,6 +40,7 @@ class Servo:
         self._current_angle = 90
         self.angle_step = round(180/angle_steps, 1)
         self.move(angle=90)
+        self.motor = gpiozero.Servo(self._gpio, pin_factory=factory)
 
     def __repr__(self):
         return f"Servo: [{self._gpio}] GPIO"
@@ -34,7 +52,9 @@ class Servo:
     def move(self, angle=90.0):
         try:
             delay = cast_delay(angle, self._current_angle)
-            angle_servo_ctrl.move(self._gpio, angle, 0.5)
+            # angle_servo_ctrl.move(self._gpio, angle, 0.5)
+            self.motor.value = angle_to_duty(angle)
+
             if angle > 180:
                 self._current_angle = 180
             elif angle < 0:
@@ -163,5 +183,5 @@ def main():
             break
 
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
