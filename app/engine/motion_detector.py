@@ -84,7 +84,7 @@ class MotionDetector(ThreadBase):
 
         self.lst_buffer_data = []
         self.is_running = False
-        
+
 
     def __del__(self):
 
@@ -280,6 +280,7 @@ class MotionDetector(ThreadBase):
 
             if self.servo_is_moving and self.servo_is_moving():
                 deque_observer.clear()
+                previous_frame_blur = None
                 continue
 
             self.current_frame = frame
