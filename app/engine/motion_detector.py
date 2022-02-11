@@ -278,7 +278,6 @@ class MotionDetector(ThreadBase):
                 continue
 
             if self.servo_is_moving and self.servo_is_moving():
-                print("Is moving !!!!")
                 continue
 
             self.current_frame = frame
