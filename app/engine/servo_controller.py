@@ -60,7 +60,7 @@ class Servo:
             # print (f"angle: {angle}")
             # print (f"scaled_value: {scaled_value}")
             # angle_servo_ctrl.move(self._gpio, angle, 0.5)
-            self.motor.value = angle
+            self.motor.angle = angle
 
             if angle > 180:
                 self._current_angle = 180
