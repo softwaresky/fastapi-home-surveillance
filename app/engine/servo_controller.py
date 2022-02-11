@@ -33,7 +33,6 @@ class Servo:
 
     def move(self, angle=90.0):
         try:
-            self.motor.angle = angle
 
             if angle > self.motor.max_angle:
                 self._current_angle = self.motor.max_angle
@@ -41,6 +40,8 @@ class Servo:
                 self._current_angle = self.motor.min_angle
             else:
                 self._current_angle = angle
+            self.motor.angle = self._current_angle
+
             return True
         except ValueError:
             return False
