@@ -56,6 +56,8 @@ class Servo:
             # delay = cast_delay(angle, self._current_angle)
             # value = angle_to_duty(angle)
             scaled_value = utils.scale_value_by_range(value=angle, scaled_range=(2.0, 12.0))
+            print (f"angle: {angle}")
+            print (f"scaled_value: {scaled_value}")
             # angle_servo_ctrl.move(self._gpio, angle, 0.5)
             self.motor.value = scaled_value
 
