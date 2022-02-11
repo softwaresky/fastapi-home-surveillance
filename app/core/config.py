@@ -17,8 +17,10 @@ class Settings(BaseSettings):
     OBSERVER_LENGTH: Optional[int] = 5
 
     SERVO_PIN_MAP: Optional[dict] = {
-        "pan_pin": 11,
-        "tilt_pin": 18
+        # "pan_pin": 11, # BOARD
+        "pan_pin": 17, # BCM
+        # "tilt_pin": 18 # BOARD
+        "tilt_pin": 24 # BOARD
     }
 
     DHT_PIN = 4
