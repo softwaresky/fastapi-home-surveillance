@@ -52,10 +52,11 @@ class Servo:
 
     def move(self, angle=90.0):
         try:
-            delay = cast_delay(angle, self._current_angle)
-            value = angle_to_duty(angle)
+            # delay = cast_delay(angle, self._current_angle)
+            # value = angle_to_duty(angle)
+            scaled_value = utils.scale_value_by_range(value=angle, scaled_range=(2.0, 12.0))
             # angle_servo_ctrl.move(self._gpio, angle, 0.5)
-            self.motor.value = value / 180
+            self.motor.value = scaled_value
 
             if angle > 180:
                 self._current_angle = 180

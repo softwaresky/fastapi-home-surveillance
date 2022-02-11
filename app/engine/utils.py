@@ -51,3 +51,10 @@ def get_dir_path_in_app(root_dir=".", target_dir=""):
                 return os.path.join(root, name)
 
     return ""
+
+def scale_value_by_range(value=0.0, value_range=(0, 180), scaled_range=(-1.0, 1.0)):
+
+    value += value_range[0]
+    value /= value_range[1] / (scaled_range[-1] - scaled_range[0])
+    value += scaled_range[0]
+    return value
