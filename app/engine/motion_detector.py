@@ -57,7 +57,7 @@ class MotionDetector(ThreadBase):
 
         self.stream = VideoStream(framerate=self.force_fps,
                                   resolution=(self.width, self.height),
-                                  use_pi_camera=True)
+                                  use_pi_camera=False)
 
         self.lst_buffer_data = []
         self.is_running = False
@@ -213,12 +213,9 @@ class MotionDetector(ThreadBase):
                 break
 
             frame = self.stream.read()
-
-            if not isinstance(frame, np.ndarray):
+            full_frame = frame
+            if not isinstance(full_frame, np.ndarray):
                 continue
-
-            self.current_frame = frame
-            self.current_timestamp = time.time()
 
             frame_deque.append(self.current_timestamp)
 
@@ -228,10 +225,12 @@ class MotionDetector(ThreadBase):
             video_text = "Temp: {temperature} deg. C  | Hum: {humidity}%".format(**self.dht_function()) if self.dht_function else ""
             video_text = f"{datetime.datetime.now(): %Y-%m-%d %H:%M:%S} | {video_text} [{fps} fps]"
 
-            cv2.rectangle(self.current_frame, (0, 0), (self.width, 30), (0, 0, 0), -1)
-            cv2.putText(self.current_frame, video_text, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+            cv2.rectangle(full_frame, (0, 0), (self.width, 30), (0, 0, 0), -1)
+            cv2.putText(full_frame, video_text, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                         (255, 255, 255), 1, cv2.LINE_AA)
 
+            self.current_frame = full_frame
+            self.current_timestamp = time.time()
 
             if self.do_record:
 
