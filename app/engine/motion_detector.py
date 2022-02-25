@@ -231,7 +231,7 @@ class MotionDetector(ThreadBase):
             h, w = self.current_frame.shape[0: 2]
             cv2.rectangle(self.current_frame, (0, 0), (w, 40), (0, 0, 0), -1)
 
-            cv2.putText(self.current_frame, video_text, (5, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+            cv2.putText(self.current_frame, video_text, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                         (255, 255, 255), 1, cv2.LINE_AA)
 
 
