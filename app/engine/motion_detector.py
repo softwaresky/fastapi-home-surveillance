@@ -122,8 +122,7 @@ class MotionDetector(ThreadBase):
             frame = f.array
             frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
-
-            # self.rawCapture.truncate(0)
+            self.rawCapture.truncate(0)
 
             if rbr == number_of_frames:
                 break
