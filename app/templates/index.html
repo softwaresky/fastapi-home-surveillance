@@ -8,7 +8,8 @@
 <body>
 
 <div>
-    <h3><img src="{{ url_for('video_feed') }}" ></h3>
+    <h3><img src="{{ url_for('video_feed', camera_index=1) }}" ></h3>
+    <h3><img src="{{ url_for('video_feed', camera_index=0) }}" ></h3>
 
 <!--    <audio controls>-->
 <!--        <source src="{{ url_for('audio_feed') }}" type="audio/x-wav;codec=pcm">-->
