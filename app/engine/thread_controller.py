@@ -62,14 +62,14 @@ class ThreadController(ThreadBase):
                                                               servo_is_moving=self.servo_controller.is_moving if self.servo_controller else None)
 
         self.motion_detector_web = None
-        # self.motion_detector_web = motion_detector.MotionDetector(camera_source_index=1,
-        #                                                           do_record=self.do_record,
-        #                                                           use_other_to_record=self.do_merge,
-        #                                                           video_format=self.video_format,
-        #                                                           threshold=motion_threshold,
-        #                                                           observer_length=observer_length,
-        #                                                           media_dir=self.media_dir,
-        #                                                           dht_function=self.dht_detector.get_data if self.dht_detector else None)
+        self.motion_detector_web = motion_detector.MotionDetector(camera_source_index=1,
+                                                                  do_record=self.do_record,
+                                                                  use_other_to_record=self.do_merge,
+                                                                  video_format=self.video_format,
+                                                                  threshold=motion_threshold,
+                                                                  observer_length=observer_length,
+                                                                  media_dir=self.media_dir,
+                                                                  dht_function=self.dht_detector.get_data if self.dht_detector else None)
         self.noise_detector = None
         self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
                                                            do_record=self.do_record,
