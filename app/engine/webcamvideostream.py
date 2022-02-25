@@ -16,8 +16,8 @@ class WebcamVideoStream:
 	def read(self):
 		# return the frame most recently read
 		_, frame = self.stream.read()
-		cv2.flip(frame, 0)
-		return frame
+		# cv2.flip(frame, 0)
+		return cv2.flip(frame, 0)
 
 	def stop(self):
 		# indicate that the thread should be stopped
