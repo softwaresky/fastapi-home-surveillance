@@ -25,7 +25,7 @@ class VideoStream:
         # otherwise, we are using OpenCV so initialize the webcam
         # stream
         else:
-            self.stream = WebcamVideoStream(src=src)
+            self.stream = WebcamVideoStream(src=src, resolution=resolution)
 
     def start(self):
         # start the threaded video stream

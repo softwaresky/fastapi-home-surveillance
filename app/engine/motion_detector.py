@@ -5,9 +5,6 @@ import math
 import time
 import datetime
 from collections import deque
-# from picamera.array import PiRGBArray
-# from picamera import PiCamera
-
 from app.engine import utils
 from app.engine.base_class import ThreadBase
 
@@ -16,7 +13,6 @@ from .videostream import VideoStream
 class MotionDetector(ThreadBase):
 
     def __init__(self,
-                 video_capture_source: cv2.VideoCapture = None,
                  observer_length: int = 5,
                  threshold: float = 7.0,
                  force_fps: int = 24,
@@ -25,8 +21,8 @@ class MotionDetector(ThreadBase):
                  use_other_to_record: bool = False,
                  video_format: str = "mp4",
                  dht_function=None,
-                 servo_is_moving=None,
-                 show_contours = False):
+                 servo_is_moving=None):
+
         super(self.__class__, self).__init__()
 
         self.name = str(self.__class__.__name__)
@@ -36,8 +32,6 @@ class MotionDetector(ThreadBase):
         self.observer_length = observer_length
         self.threshold = threshold
         self.video_capture = None
-        self.show_contours = show_contours
-        # self.video_capture = video_capture_source if video_capture_source else MotionDetector.get_video_capture()
         self.force_fps = force_fps if force_fps else self.get_fps()
         self._frame_rate = self.force_fps
 
@@ -45,7 +39,6 @@ class MotionDetector(ThreadBase):
         self.do_record = do_record
         self.is_saved = False
         self.video_format = video_format
-        # self.height, self.width = self.get_resolutions()
         self.width, self.height = (640, 480)
         self.current_frame = None
         self.orig_frame = None
@@ -61,19 +54,6 @@ class MotionDetector(ThreadBase):
         self.dht_function = dht_function
         self.servo_is_moving = servo_is_moving
 
-        # # initialize the camera
-        # self.camera = PiCamera()
-        # self.camera.vflip = True
-        # self.camera.hflip = True
-        # # set camera parameters
-        # self.camera.resolution = (self.width, self.height)
-        # self.camera.framerate = self.force_fps
-        #
-        # # initialize the stream
-        # self.rawCapture = PiRGBArray(self.camera, size=(self.width, self.height))
-        # self.stream = self.camera.capture_continuous(self.rawCapture,
-        #                                              format="bgr",
-        #                                              use_video_port=True)
 
         self.stream = VideoStream(framerate=self.force_fps,
                                   resolution=(self.width, self.height),
@@ -89,16 +69,7 @@ class MotionDetector(ThreadBase):
 
         if self.stream:
             self.stream.stop()
-            # self.stream.close()
             del self.stream
-
-        # if self.rawCapture:
-        #     self.rawCapture.close()
-        #     del self.rawCapture
-        #
-        # if self.camera:
-        #     self.camera.close()
-        #     del self.camera
 
         if self.video_capture:
             self.video_capture.release()
@@ -113,28 +84,13 @@ class MotionDetector(ThreadBase):
             if frame is not None:
                 frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
-                # self.video_capture.read()
 
-
-        # rbr = 0
-        # for f in self.stream:
-        #     # grab the frame from the stream and clear the stream in
-        #     # preparation for the next frame
-        #     frame = f.array
-        #     self.rawCapture.truncate(0)
-        #     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #     frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
-        #
-        #
-        #     if rbr == number_of_frames:
-        #         break
-        #     rbr += 1
 
         return number_of_frames / (time.time() - start_time)
 
     def get_resolutions(self):
 
-        _, image = self.video_capture.read()
+        _, image = self.stream.read()
         if isinstance(image, np.ndarray):
             frame = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
             return frame.shape[0: 2]
@@ -249,7 +205,6 @@ class MotionDetector(ThreadBase):
         self.is_running = False
 
         self.log_manager.log("Camera preparing...")
-        # self.camera.start_preview()
         self.stream.start()
         time.sleep(2)
         self._frame_rate = self.get_fps()
@@ -264,27 +219,20 @@ class MotionDetector(ThreadBase):
 
         self.is_running = True
 
+        print (f"RESOLUTION: {self.get_resolutions()}")
         # keep looping infinitely until the thread is stopped
 
         while self.is_running:
-        # for f in self.stream:
 
             if not self.is_running:
                 break
 
             frame = self.stream.read()
 
-            # f = next(self.stream)
-            # # grab the frame from the stream and clear the stream in
-            # # preparation for the next frame
-            # frame = f.array
-            # self.rawCapture.truncate(0)
-
             if not isinstance(frame, np.ndarray):
                 continue
 
             self.current_frame = frame
-            # self.current_frame = cv2.flip(frame, 0)
             self.current_timestamp = time.time()
 
             frame_deque.append(self.current_timestamp)
@@ -327,57 +275,6 @@ class MotionDetector(ThreadBase):
 
                 previous_frame_blur = frame_blur
 
-            ## cv2 use
-            # while True:
-            #
-            #     camera_.capture(output, format="bgr", use_video_port=True)
-            #
-            #     frame = output
-            #     if not isinstance(frame, np.ndarray):
-            #         continue
-            #
-            #     if self.servo_is_moving and self.servo_is_moving():
-            #         continue
-            #
-            #     self.current_frame = frame
-            #     # self.current_frame = cv2.flip(frame, 0)
-            #     self.current_timestamp = time.time()
-            #
-            #     frame_deque.append(self.current_timestamp)
-            #     time_diff = frame_deque[-1] - frame_deque[0]
-            #     fps = 0.0
-            #     if time_diff > 0:
-            #         fps = round(len(frame_deque) / time_diff, 1)
-            #
-            #     self.set_video_text_from_object()
-            #     video_text = f"{datetime.datetime.now(): %Y-%m-%d %H:%M:%S} | {self.video_text} [{fps} fps]"
-            #     cv2.putText(self.current_frame, video_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-            #                 (255, 255, 255), 1, cv2.LINE_AA)
-            #
-            #     frame_gray = cv2.cvtColor(self.current_frame, cv2.COLOR_BGR2GRAY)
-            #     frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
-            #
-            #     if previous_frame is None:
-            #         previous_frame = frame_blur
-            #         continue
-            #
-            #     delta_frame = cv2.absdiff(previous_frame, frame_blur)
-            #     threshold_frame = cv2.threshold(delta_frame, 15, 255, cv2.THRESH_BINARY)[1]
-            #     kernel = np.ones((5, 5), np.uint8)
-            #     dilated_frame = cv2.dilate(threshold_frame, kernel, iterations=4)
-            #     res = dilated_frame.astype(np.uint8)
-            #     motion_percentage = (np.count_nonzero(res) * 100) / res.size
-            #
-            #     deque_observer.append(motion_percentage)
-            #
-            #     self._value = motion_percentage
-            #
-            #     self.detect_motion = sum([x > self.threshold for x in deque_observer]) > 0
-            #
-            #     if self.do_record:
-            #         self.do_recording()
-            #
-            #     previous_frame = frame_blur
 
 
 # def main():
