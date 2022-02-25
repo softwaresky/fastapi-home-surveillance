@@ -9,6 +9,7 @@ from app.engine import utils
 from app.engine.base_class import ThreadBase
 
 from .videostream import VideoStream
+from .servo_controller import ServoController
 
 class MotionDetector(ThreadBase):
 
@@ -22,7 +23,8 @@ class MotionDetector(ThreadBase):
                  use_other_to_record: bool = False,
                  video_format: str = "mp4",
                  dht_function=None,
-                 servo_is_moving=None):
+                 servo_is_moving=None,
+                 servo: ServoController = None):
 
         super(self.__class__, self).__init__()
 
@@ -63,6 +65,8 @@ class MotionDetector(ThreadBase):
 
         self.lst_buffer_data = []
         self.is_running = False
+
+        self.servo = servo
 
 
     def __del__(self):
@@ -187,6 +191,10 @@ class MotionDetector(ThreadBase):
             self.stop_recording()
             self.log_manager.log("Observing...")
 
+    def servo_move(self, sides: str = "", angle: int = None):
+
+        if self.servo:
+            self.servo.move(sides=sides, angle=angle)
 
     def run(self) -> None:
 
@@ -233,7 +241,7 @@ class MotionDetector(ThreadBase):
 
             if self.do_record:
 
-                if self.servo_is_moving and self.servo_is_moving():
+                if self.servo and self.servo.is_moving():
                     deque_observer.clear()
                     previous_frame_blur = None
                     continue
