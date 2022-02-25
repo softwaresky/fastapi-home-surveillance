@@ -197,12 +197,9 @@ class MotionDetector(ThreadBase):
         self._frame_rate = round(self._frame_rate)
         self.log_manager.log(f"FPS calculated: {self._frame_rate}")
         self.log_manager.log("Observing...")
-
         frame_deque = deque(maxlen=60)
         deque_observer = deque(maxlen=self.observer_length * int(self._frame_rate))
-
         previous_frame_blur = None
-
         self.is_running = True
 
         # keep looping infinitely until the thread is stopped
@@ -231,7 +228,6 @@ class MotionDetector(ThreadBase):
                         (255, 255, 255), 1, cv2.LINE_AA)
 
             self.current_frame = full_frame
-
 
             if self.do_record:
 
