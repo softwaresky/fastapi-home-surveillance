@@ -27,6 +27,9 @@ class PiCameraStream:
         self.frame = None
         self.stopped = False
 
+    def __del__(self):
+        self.close()
+
     def read(self):
 
         for f in self.stream:

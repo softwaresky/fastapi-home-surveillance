@@ -18,4 +18,4 @@ class WebcamVideoStream:
             yield frame
 
     def close(self):
-        pass
+        self.stopped = True
