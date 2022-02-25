@@ -27,7 +27,7 @@ async def move_by_axis(
         servo_ctrl: ServoUpdate
 ) -> Any:
     try:
-        controller.servo_controller.move(**servo_ctrl.dict())
+        controller.motion_detector.servo_move(**servo_ctrl.dict())
 
     except Exception as err:
         return {
