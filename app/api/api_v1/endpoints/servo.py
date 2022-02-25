@@ -44,3 +44,18 @@ async def move_by_axis(
         "message": "Successfully moved.",
         "data": data
     }
+
+@router.get("/info")
+async def get_info() -> Any:
+    data = {}
+    try:
+        if controller.motion_detector.servo:
+            data = controller.motion_detector.servo.get_data()
+
+    except Exception as err:
+        return {
+            "success": "Error",
+            "message": f"{err}"
+        }
+
+    return data
