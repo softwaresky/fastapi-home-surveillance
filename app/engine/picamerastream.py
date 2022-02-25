@@ -58,6 +58,7 @@ class PiVideoStream:
 
 	def read(self):
 		f = next(self.stream)
+		print (len(self.stream))
 		self.rawCapture.truncate(0)
 		return f.array
 
