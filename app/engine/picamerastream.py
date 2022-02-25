@@ -36,6 +36,9 @@ class PiVideoStream:
 
 	def _update(self):
 		# keep looping infinitely until the thread is stopped
+
+		self.camera.start_preview()
+
 		for f in self.stream:
 			# grab the frame from the stream and clear the stream in
 			# preparation for the next frame

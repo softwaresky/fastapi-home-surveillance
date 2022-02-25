@@ -60,23 +60,22 @@ class MotionDetector(ThreadBase):
         self.dht_function = dht_function
         self.servo_is_moving = servo_is_moving
 
-        # initialize the camera
-        self.camera = PiCamera()
-        self.camera.vflip = True
-        self.camera.hflip = True
-        # set camera parameters
-        self.camera.resolution = (self.width, self.height)
-        self.camera.framerate = self.force_fps
+        # # initialize the camera
+        # self.camera = PiCamera()
+        # self.camera.vflip = True
+        # self.camera.hflip = True
+        # # set camera parameters
+        # self.camera.resolution = (self.width, self.height)
+        # self.camera.framerate = self.force_fps
+        # # initialize the stream
+        # self.rawCapture = PiRGBArray(self.camera, size=(self.width, self.height))
+        # self.stream = self.camera.capture_continuous(self.rawCapture,
+        #                                              format="bgr",
+        #                                              use_video_port=True)
 
-        # initialize the stream
-        self.rawCapture = PiRGBArray(self.camera, size=(self.width, self.height))
-        self.stream = self.camera.capture_continuous(self.rawCapture,
-                                                     format="bgr",
-                                                     use_video_port=True)
-
-        # self.stream = VideoStream(framerate=self.force_fps,
-        #                           resolution=(self.width, self.height),
-        #                           usePiCamera=True)
+        self.stream = VideoStream(framerate=self.force_fps,
+                                  resolution=(self.width, self.height),
+                                  usePiCamera=True)
 
         self.lst_buffer_data = []
         self.is_running = False
@@ -87,17 +86,17 @@ class MotionDetector(ThreadBase):
         self.is_running = False
 
         if self.stream:
-            # self.stream.stop()
-            self.stream.close()
-            del self.stream
+            self.stream.stop()
+            # self.stream.close()
+            # del self.stream
 
-        if self.rawCapture:
-            self.rawCapture.close()
-            del self.rawCapture
-
-        if self.camera:
-            self.camera.close()
-            del self.camera
+        # if self.rawCapture:
+        #     self.rawCapture.close()
+        #     del self.rawCapture
+        #
+        # if self.camera:
+        #     self.camera.close()
+        #     del self.camera
 
         if self.video_capture:
             self.video_capture.release()
@@ -107,26 +106,26 @@ class MotionDetector(ThreadBase):
         number_of_frames = 60
         start_time = time.time()
 
-        # for i in range(number_of_frames):
-        #     frame = self.stream.read()
-        #     if frame is not None:
-        #         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #         frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
-        #         # self.video_capture.read()
+        for i in range(number_of_frames):
+            frame = self.stream.read()
+            if frame is not None:
+                frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
+                # self.video_capture.read()
 
 
-        rbr = 0
-        for f in self.stream:
-            # grab the frame from the stream and clear the stream in
-            # preparation for the next frame
-            frame = f.array
-            frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
-            self.rawCapture.truncate(0)
-
-            if rbr == number_of_frames:
-                break
-            rbr += 1
+        # rbr = 0
+        # for f in self.stream:
+        #     # grab the frame from the stream and clear the stream in
+        #     # preparation for the next frame
+        #     frame = f.array
+        #     self.rawCapture.truncate(0)
+        #     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #     frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
+        #
+        #     if rbr == number_of_frames:
+        #         break
+        #     rbr += 1
 
         return number_of_frames / (time.time() - start_time)
 
@@ -246,7 +245,7 @@ class MotionDetector(ThreadBase):
         self.is_running = False
 
         self.log_manager.log("Camera preparing...")
-        self.camera.start_preview()
+        # self.camera.start_preview()
         # self.stream.start()
         time.sleep(2)
         self._frame_rate = self.get_fps()
@@ -263,18 +262,18 @@ class MotionDetector(ThreadBase):
 
         # keep looping infinitely until the thread is stopped
 
-        # while self.is_running:
-        for f in self.stream:
+        while self.is_running:
+        # for f in self.stream:
+        #
+        #     if not self.is_running:
+        #         break
 
-            if not self.is_running:
-                break
+            frame = self.stream.read()
 
-            # frame = self.stream.read()
-
-            # grab the frame from the stream and clear the stream in
-            # preparation for the next frame
-            frame = f.array
-            self.rawCapture.truncate(0)
+            # # grab the frame from the stream and clear the stream in
+            # # preparation for the next frame
+            # frame = f.array
+            # self.rawCapture.truncate(0)
 
             if not isinstance(frame, np.ndarray):
                 continue
