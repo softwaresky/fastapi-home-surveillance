@@ -59,7 +59,6 @@ class MotionDetector(ThreadBase):
         self.force_recording = False
         self.dht_function = dht_function
         self.servo_is_moving = servo_is_moving
-        self.is_brake = False
 
         # # initialize the camera
         # self.camera = PiCamera()
@@ -257,18 +256,15 @@ class MotionDetector(ThreadBase):
         self.is_running = True
 
         # keep looping infinitely until the thread is stopped
-        for frame in self.stream.read():
 
-            if not self.is_running:
-                break
+        while self.is_running:
+
+            frame = next(self.stream.read())
 
             # grab the frame from the stream and clear the stream in
             # preparation for the next frame
             # frame = f.array
             # self.rawCapture.truncate(0)
-
-            if self.is_brake:
-                break
 
             if not isinstance(frame, np.ndarray):
                 continue
