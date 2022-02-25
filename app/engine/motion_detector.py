@@ -249,8 +249,8 @@ class MotionDetector(ThreadBase):
 
         self.log_manager.log("Camera preparing...")
         # self.camera.start_preview()
+        self.stream.start()
         time.sleep(2)
-
         self._frame_rate = self.get_fps()
         self._frame_rate = round(self._frame_rate)
         self.log_manager.log(f"FPS calculated: {self._frame_rate}")
