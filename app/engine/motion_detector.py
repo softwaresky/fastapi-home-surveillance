@@ -90,9 +90,9 @@ class MotionDetector(ThreadBase):
 
     def get_resolutions(self):
 
-        _, image = self.stream.read()
-        if isinstance(image, np.ndarray):
-            frame = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        frame = self.stream.read()
+        if isinstance(frame, np.ndarray):
+            # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
             return frame.shape[0: 2]
         return 0, 0
 
