@@ -55,7 +55,8 @@ class MotionDetector(ThreadBase):
         self.servo_is_moving = servo_is_moving
 
 
-        self.stream = VideoStream(framerate=self.force_fps,
+        self.stream = VideoStream(src=1,
+                                  framerate=self.force_fps,
                                   resolution=(self.width, self.height),
                                   use_pi_camera=False)
 
