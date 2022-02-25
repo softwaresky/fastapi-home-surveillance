@@ -217,6 +217,7 @@ class MotionDetector(ThreadBase):
             if not isinstance(full_frame, np.ndarray):
                 continue
 
+            self.current_timestamp = time.time()
             frame_deque.append(self.current_timestamp)
 
             time_diff = frame_deque[-1] - frame_deque[0]
@@ -230,7 +231,7 @@ class MotionDetector(ThreadBase):
                         (255, 255, 255), 1, cv2.LINE_AA)
 
             self.current_frame = full_frame
-            self.current_timestamp = time.time()
+
 
             if self.do_record:
 
