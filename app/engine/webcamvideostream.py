@@ -16,6 +16,7 @@ class WebcamVideoStream:
 	def read(self):
 		# return the frame most recently read
 		_, frame = self.stream.read()
+		cv2.flip(frame, 0)
 		return frame
 
 	def stop(self):

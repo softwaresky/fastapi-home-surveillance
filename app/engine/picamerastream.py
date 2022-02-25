@@ -10,6 +10,8 @@ class PiVideoStream:
         # set camera parameters
         self.camera.resolution = resolution
         self.camera.framerate = framerate
+        self.camera.vflip = True
+        self.camera.hflip = True
 
         # set optional camera parameters (refer to PiCamera docs)
         for (arg, value) in kwargs.items():

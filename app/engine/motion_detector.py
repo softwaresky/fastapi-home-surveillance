@@ -77,10 +77,7 @@ class MotionDetector(ThreadBase):
 
         self.stream = VideoStream(framerate=self.force_fps,
                                   resolution=(self.width, self.height),
-                                  usePiCamera=False,
-                                  vflip=True,
-                                  hflip=True
-                                  )
+                                  use_pi_camera=False)
 
         self.lst_buffer_data = []
         self.is_running = False
