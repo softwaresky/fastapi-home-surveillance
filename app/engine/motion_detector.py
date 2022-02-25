@@ -5,13 +5,13 @@ import math
 import time
 import datetime
 from collections import deque
-from picamera.array import PiRGBArray
-from picamera import PiCamera
+# from picamera.array import PiRGBArray
+# from picamera import PiCamera
 
 from app.engine import utils
 from app.engine.base_class import ThreadBase
 
-from .picamerastream import PiCameraStream
+from .videostream import VideoStream
 
 class MotionDetector(ThreadBase):
 
@@ -74,7 +74,9 @@ class MotionDetector(ThreadBase):
         #                                              format="bgr",
         #                                              use_video_port=True)
 
-        self.stream = PiCameraStream(framerate=self.force_fps, resolution=(self.width, self.height))
+        self.stream = VideoStream(framerate=self.force_fps,
+                                  resolution=(self.width, self.height),
+                                  usePiCamera=True)
 
         self.lst_buffer_data = []
         self.is_running = False
@@ -85,7 +87,8 @@ class MotionDetector(ThreadBase):
         self.is_running = False
 
         if self.stream:
-            self.stream.close()
+            self.stream.stop()
+            # self.stream.close()
             # del self.stream
 
         # if self.rawCapture:
@@ -102,25 +105,29 @@ class MotionDetector(ThreadBase):
 
     def get_fps(self):
         number_of_frames = 60
-
-        # for i in range(number_of_frames):
-        #     self.video_capture.read()
-
         start_time = time.time()
 
-        rbr = 0
-        for frame in self.stream.read():
-            # grab the frame from the stream and clear the stream in
-            # preparation for the next frame
-            # frame = f.array
+        for i in range(number_of_frames):
+            frame = self.stream.read()
             frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
+            # self.video_capture.read()
 
-            # self.rawCapture.truncate(0)
 
-            if rbr == number_of_frames:
-                break
-            rbr += 1
+
+        # rbr = 0
+        # for frame in self.stream.read():
+        #     # grab the frame from the stream and clear the stream in
+        #     # preparation for the next frame
+        #     # frame = f.array
+        #     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #     frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
+        #
+        #     # self.rawCapture.truncate(0)
+        #
+        #     if rbr == number_of_frames:
+        #         break
+        #     rbr += 1
 
         return number_of_frames / (time.time() - start_time)
 
@@ -259,7 +266,7 @@ class MotionDetector(ThreadBase):
 
         while self.is_running:
 
-            frame = next(self.stream.read())
+            frame = self.stream.read()
 
             # grab the frame from the stream and clear the stream in
             # preparation for the next frame
