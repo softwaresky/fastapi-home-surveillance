@@ -13,6 +13,7 @@ from .videostream import VideoStream
 class MotionDetector(ThreadBase):
 
     def __init__(self,
+                 camera_source_index=0,
                  observer_length: int = 5,
                  threshold: float = 7.0,
                  force_fps: int = 24,
@@ -55,7 +56,7 @@ class MotionDetector(ThreadBase):
         self.servo_is_moving = servo_is_moving
 
 
-        self.stream = VideoStream(src=1,
+        self.stream = VideoStream(src=camera_source_index,
                                   framerate=self.force_fps,
                                   resolution=(self.width, self.height),
                                   use_pi_camera=False)

@@ -23,20 +23,25 @@ def get_record_state():
     }
 
 
-@router.get("/video-feed")
-def video_feed():
-    def gen_video() -> Generator:
+@router.get("/video-feed/{camera_index}")
+def video_feed(camera_index: int = 0):
+
+    def _gen_video(index=0) -> Generator:
         while True:
             frame = b""
-            if controller.motion_detector:
-                frame = controller.motion_detector.get_frame()
+            if index == 0:
+                if controller.motion_detector:
+                    frame = controller.motion_detector.get_frame()
+            elif index == 1:
+                if controller.motion_detector_web:
+                    frame = controller.motion_detector_web.get_frame()
 
             if frame is not None:
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
     return StreamingResponse(
-        gen_video(),
+        _gen_video(camera_index),
         media_type='multipart/x-mixed-replace; boundary=frame'
     )
 

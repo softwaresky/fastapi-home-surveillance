@@ -61,6 +61,15 @@ class ThreadController(ThreadBase):
                                                               dht_function=self.dht_detector.get_data if self.dht_detector else None,
                                                               servo_is_moving=self.servo_controller.is_moving if self.servo_controller else None)
 
+        self.motion_detector_web = None
+        self.motion_detector_web = motion_detector.MotionDetector(camera_source_index=1,
+                                                                  do_record=self.do_record,
+                                                                  use_other_to_record=self.do_merge,
+                                                                  video_format=self.video_format,
+                                                                  threshold=motion_threshold,
+                                                                  observer_length=observer_length,
+                                                                  media_dir=self.media_dir,
+                                                                  dht_function=self.dht_detector.get_data if self.dht_detector else None)
         self.noise_detector = None
         self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
                                                            do_record=self.do_record,
@@ -78,6 +87,7 @@ class ThreadController(ThreadBase):
         if self.motion_detector: self._lst_threads.append(self.motion_detector)
         if self.noise_detector: self._lst_threads.append(self.noise_detector)
         if self.media_file_manager: self._lst_threads.append(self.media_file_manager)
+        if self.motion_detector_web: self._lst_threads.append(self.motion_detector_web)
 
         self.fill_do_record()
 
@@ -134,7 +144,8 @@ class ThreadController(ThreadBase):
 
                 self.current_file = f"{record_file_name}.{self.video_format}"
                 if self.motion_detector:
-                    self.motion_detector.current_file = os.path.join(dir_name, f".{base_name}_video.{self.video_format}")
+                    self.motion_detector.current_file = os.path.join(dir_name,
+                                                                     f".{base_name}_video.{self.video_format}")
                 if self.noise_detector:
                     self.noise_detector.current_file = os.path.join(dir_name, f".{base_name}_audio.{self.audio_format}")
 
@@ -195,7 +206,6 @@ controller = ThreadController(do_record=settings.DO_RECORD,
 
 
 def main():
-
     def _calculate_inputs(input_str=""):
         input_str = input_str.strip()
         split_input = input_str.split(" ")
@@ -226,7 +236,6 @@ def main():
         except KeyboardInterrupt:
             del controller
             break
-
 
 # if __name__ == '__main__':
 #     main()
