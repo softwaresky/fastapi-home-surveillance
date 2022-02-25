@@ -59,8 +59,7 @@ class ThreadController(ThreadBase):
                                                               observer_length=observer_length,
                                                               media_dir=self.media_dir,
                                                               dht_function=self.dht_detector.get_data if self.dht_detector else None,
-                                                              servo_is_moving=self.servo_controller.is_moving if self.servo_controller else None,
-                                                              show_contours=False)
+                                                              servo_is_moving=self.servo_controller.is_moving if self.servo_controller else None)
 
         self.noise_detector = None
         self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
