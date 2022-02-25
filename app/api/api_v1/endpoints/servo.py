@@ -26,9 +26,12 @@ def shutdown_router():
 async def move_by_axis(
         servo_ctrl: ServoUpdate
 ) -> Any:
+    data = {}
     try:
-        controller.motion_detector.servo_move(**servo_ctrl.dict())
-
+        # controller.servo_controller.move(**servo_ctrl.dict())
+        if controller.motion_detector.servo:
+            controller.motion_detector.servo.move(**servo_ctrl.dict())
+            data = controller.motion_detector.servo.get_data()
     except Exception as err:
         return {
             "success": "Error",
@@ -39,5 +42,5 @@ async def move_by_axis(
     return {
         "success": "OK",
         "message": "Successfully moved.",
-        "data": controller.servo_controller.get_data()
+        "data": data
     }

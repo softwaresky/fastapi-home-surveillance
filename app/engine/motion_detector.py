@@ -191,11 +191,6 @@ class MotionDetector(ThreadBase):
             self.stop_recording()
             self.log_manager.log("Observing...")
 
-    def servo_move(self, sides: str = "", angle: int = None):
-
-        if self.servo:
-            self.servo.move(sides=sides, angle=angle)
-
     def run(self) -> None:
 
         self.is_running = False
