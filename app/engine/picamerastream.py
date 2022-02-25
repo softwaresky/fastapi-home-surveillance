@@ -31,10 +31,10 @@ class PiVideoStream:
 		# start the thread to read frames from the video stream
 		self.camera.start_preview()
 
-		t = Thread(target=self._update, args=())
-		t.daemon = True
-		t.start()
-		return self
+		# t = Thread(target=self._update, args=())
+		# t.daemon = True
+		# t.start()
+		# return self
 
 	def _update(self):
 		# keep looping infinitely until the thread is stopped
