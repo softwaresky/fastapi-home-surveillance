@@ -85,16 +85,7 @@ class MotionDetector(ThreadBase):
                 frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
 
-
         return number_of_frames / (time.time() - start_time)
-
-    def get_resolutions(self):
-
-        frame = self.stream.read()
-        if isinstance(frame, np.ndarray):
-            # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-            return frame.shape[0: 2]
-        return 0, 0
 
     def get_function_kwargs(self):
         return {
@@ -128,12 +119,8 @@ class MotionDetector(ThreadBase):
             if not width and not height:
                 height, width = records[0][1].shape[:2]
 
-            # frame_rate = self.frame_rate
-            # if not frame_rate:
             frame_rate = round(len(records) / (records[-1][0] - records[0][0]))
             zero_timestamp = records[0][0]
-            # total_frames_data = int(math.floor((self.records[-1][0] - zero_timestamp) * frame_rate))
-            # if total_frames_data <= len(self.records):
             time_step = 1 / frame_rate
             timestamp_value = 0
 
@@ -176,7 +163,6 @@ class MotionDetector(ThreadBase):
         self.current_file = ""
 
     def is_recording(self):
-        # return len(self.records) > 0 or self.writer and self.writer.isOpened()
         return len(self.records) > 0
 
     def do_recording(self):
@@ -219,7 +205,6 @@ class MotionDetector(ThreadBase):
 
         self.is_running = True
 
-        print (f"RESOLUTION: {self.get_resolutions()}")
         # keep looping infinitely until the thread is stopped
 
         while self.is_running:
@@ -242,6 +227,10 @@ class MotionDetector(ThreadBase):
 
             video_text = "Temp: {temperature} deg. C  | Hum: {humidity}%".format(**self.dht_function()) if self.dht_function else ""
             video_text = f"{datetime.datetime.now(): %Y-%m-%d %H:%M:%S} | {video_text} [{fps} fps]"
+
+            h, w = self.current_frame.shape[0: 2]
+            cv2.rectangle(self.current_frame, (0, 0), (w, 40), (0, 0, 0), -1)
+
             cv2.putText(self.current_frame, video_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                         (255, 255, 255), 1, cv2.LINE_AA)
 
