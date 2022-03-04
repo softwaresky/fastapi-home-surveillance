@@ -149,10 +149,10 @@ class NoiseDetector(ThreadBase):
 
     def __del__(self):
 
-        if self.stream:
+        if hasattr(self, "stream") and self.stream:
             self.stream.stop_stream()
             if self.audio:
-                self.audio.close(self.stream)
+                self.audio.close()
                 self.audio.terminate()
 
         # del self.stream
