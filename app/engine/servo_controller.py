@@ -73,7 +73,7 @@ class ServoController(ThreadBase):
         for axis_ in self.dict_servos:
             self.log_manager.log(f"{axis_}: {self.dict_servos[axis_]}")
 
-        self.lock = threading.Lock()
+        # self.lock = threading.Lock()
 
     def is_moving(self):
         return self._is_moving
@@ -109,15 +109,15 @@ class ServoController(ThreadBase):
 
     def move(self, sides="", angle=None):
 
-        self.lock.acquire()
+        # self.lock.acquire()
         self._is_moving = True
         if list(set(sides) & set(DICT_DIRECTION_MAP.keys())):
             self.move_by_sides(sides=sides)
         elif list(set(sides) & set(AXIS_WORLD)) and angle is not None:
             self.move_by_axis(axis=sides, angle=angle)
-        # time.sleep(.3)
+        time.sleep(.3)
         self._is_moving = False
-        self.lock.release()
+        # self.lock.release()
 
     def get_data(self):
 

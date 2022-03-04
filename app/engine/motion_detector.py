@@ -293,8 +293,8 @@ class MotionDetector(ThreadBase):
 
                         if self.servo and self.auto_aim:
                             self.servo.move(sides=side, angle=angle)
-                        # print(f"{direction_x} => {(length_x / frame_cx) * 100}%, {direction_y} => {(length_y / frame_cy) * 100}%")
 
+                        # print(f"{direction_x} => {(length_x / frame_cx) * 100}%, {direction_y} => {(length_y / frame_cy) * 100}%")
                         # cv2.circle(full_frame, (cnt_cx, cnt_cy), 5, (0, 0, 255), 1)
                         # cv2.circle(full_frame, (frame_cx, frame_cy), 10, (0, 255, 255), 1)
                         # cv2.rectangle(full_frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
