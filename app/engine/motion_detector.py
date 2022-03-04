@@ -226,7 +226,7 @@ class MotionDetector(ThreadBase):
 
             frame_deque.append(self.current_timestamp)
 
-            if self.do_record:
+            if self.do_record or self.auto_aim:
 
                 if self.servo and self.servo.is_moving() or self.servo_is_moving and self.servo_is_moving():
                     add_time = time.time() + (15 * 1000)
@@ -291,7 +291,7 @@ class MotionDetector(ThreadBase):
                             angle = self.camera_center_move * (length_y / frame_cy)
                             side = "N" if cnt_cy < frame_cy else "S"
 
-                        if self.servo and self.auto_aim:
+                        if self.servo:
                             self.servo.move(sides=side, angle=angle)
 
                         # print(f"{direction_x} => {(length_x / frame_cx) * 100}%, {direction_y} => {(length_y / frame_cy) * 100}%")
