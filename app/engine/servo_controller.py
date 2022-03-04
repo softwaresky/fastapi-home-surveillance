@@ -4,10 +4,8 @@ from app.engine import utils
 from app.engine.base_class import ThreadBase
 import gpiozero
 from gpiozero.pins.pigpio import PiGPIOFactory
-import threading
 
 factory = PiGPIOFactory()
-lock = threading.Lock()
 
 AXIS_WORLD = "yz"
 DICT_DIRECTION_MAP = {"N": ("z", -1),  # North
@@ -109,14 +107,13 @@ class ServoController(ThreadBase):
 
     def move(self, sides="", angle=None):
 
-        with lock:
-            self._is_moving = True
-            if list(set(sides) & set(DICT_DIRECTION_MAP.keys())):
-                self.move_by_sides(sides=sides)
-            elif list(set(sides) & set(AXIS_WORLD)) and angle is not None:
-                self.move_by_axis(axis=sides, angle=angle)
-            # time.sleep(.3)
-            self._is_moving = False
+        self._is_moving = True
+        if list(set(sides) & set(DICT_DIRECTION_MAP.keys())):
+            self.move_by_sides(sides=sides)
+        elif list(set(sides) & set(AXIS_WORLD)) and angle is not None:
+            self.move_by_axis(axis=sides, angle=angle)
+        # time.sleep(.3)
+        self._is_moving = False
 
     def get_data(self):
 

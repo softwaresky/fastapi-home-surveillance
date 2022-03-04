@@ -4,6 +4,7 @@ import numpy as np
 import math
 import time
 import datetime
+import threading
 from collections import deque
 from app.engine import utils
 from app.engine.base_class import ThreadBase
@@ -67,6 +68,7 @@ class MotionDetector(ThreadBase):
         self.is_running = False
 
         self.servo = servo
+        self.lock = threading.Lock()
 
 
     def __del__(self):
@@ -80,6 +82,11 @@ class MotionDetector(ThreadBase):
         if self.video_capture:
             self.video_capture.release()
 
+    def move_servo(self, sides="", angle=None):
+
+        if self.servo:
+            with self.lock:
+                self.servo.move(sides=sides, angle=angle)
 
     def get_fps(self):
         number_of_frames = 60
