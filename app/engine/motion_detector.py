@@ -228,13 +228,13 @@ class MotionDetector(ThreadBase):
 
             if self.do_record or self.auto_aim:
 
-                if self.servo and self.servo.is_moving() or self.servo_is_moving and self.servo_is_moving():
-                    add_time = time.time() + (15 * 1000)
-
-                if self.current_timestamp < add_time:
-                    deque_observer.clear()
-                    previous_frame_blur = None
-                    continue
+                # if self.servo and self.servo.is_moving() or self.servo_is_moving and self.servo_is_moving():
+                #     add_time = time.time() + (15 * 1000)
+                #
+                # if self.current_timestamp < add_time:
+                #     deque_observer.clear()
+                #     previous_frame_blur = None
+                #     continue
 
                 frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 frame_blur = cv2.GaussianBlur(frame_gray, (21, 21), 0)
