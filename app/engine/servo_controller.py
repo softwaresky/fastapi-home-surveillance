@@ -3,6 +3,7 @@ from app.engine import utils
 from app.engine.base_class import ThreadBase
 import gpiozero
 from gpiozero.pins.pigpio import PiGPIOFactory
+import threading
 
 factory = PiGPIOFactory()
 
@@ -72,6 +73,8 @@ class ServoController(ThreadBase):
         for axis_ in self.dict_servos:
             self.log_manager.log(f"{axis_}: {self.dict_servos[axis_]}")
 
+        self.lock = threading.Lock()
+
     def is_moving(self):
         return self._is_moving
 
@@ -106,6 +109,7 @@ class ServoController(ThreadBase):
 
     def move(self, sides="", angle=None):
 
+        self.lock.acquire()
         self._is_moving = True
         if list(set(sides) & set(DICT_DIRECTION_MAP.keys())):
             self.move_by_sides(sides=sides)
@@ -113,6 +117,7 @@ class ServoController(ThreadBase):
             self.move_by_axis(axis=sides, angle=angle)
         # time.sleep(.3)
         self._is_moving = False
+        self.lock.release()
 
     def get_data(self):
 

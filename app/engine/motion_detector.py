@@ -2,7 +2,6 @@ import os
 import cv2
 import numpy as np
 import math
-import threading
 import time
 import datetime
 from collections import deque
@@ -68,7 +67,6 @@ class MotionDetector(ThreadBase):
         self.is_running = False
 
         self.servo = servo
-        self.lock = threading.Lock()
 
     def __del__(self):
 
@@ -80,14 +78,6 @@ class MotionDetector(ThreadBase):
 
         if self.video_capture:
             self.video_capture.release()
-
-    def move_servo(self, sides="", angle=None):
-
-        if self.servo:
-            self.lock.acquire()
-            self.servo.move(sides=sides, angle=angle)
-            self.lock.release()
-
 
     def get_fps(self):
         number_of_frames = 60
@@ -227,12 +217,17 @@ class MotionDetector(ThreadBase):
                 continue
 
             full_frame = frame.copy()
+            add_time = time.time()
             self.current_timestamp = time.time()
+
             frame_deque.append(self.current_timestamp)
 
             if self.do_record:
 
                 if self.servo and self.servo.is_moving() or self.servo_is_moving and self.servo_is_moving():
+                    add_time = time.time() + (1 * 1000)
+
+                if self.current_timestamp < add_time:
                     deque_observer.clear()
                     previous_frame_blur = None
                     continue
