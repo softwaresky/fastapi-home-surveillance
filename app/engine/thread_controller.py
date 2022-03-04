@@ -49,7 +49,7 @@ class ThreadController(ThreadBase):
         self.dht_detector = dht_detector.DhtDetector(dht_pin=dht_pin)
 
         self.servo_controller = None
-        self.servo_controller = servo_controller.ServoController(**servo_pin_map)
+        # self.servo_controller = servo_controller.ServoController(**servo_pin_map)
 
         self.motion_detector = None
         self.motion_detector = motion_detector.MotionDetector(do_record=self.do_record,
@@ -59,8 +59,8 @@ class ThreadController(ThreadBase):
                                                               observer_length=observer_length,
                                                               media_dir=self.media_dir,
                                                               dht_function=self.dht_detector.get_data if self.dht_detector else None,
-                                                              servo_is_moving=self.servo_controller.is_moving if self.servo_controller else None,
-                                                              # servo=servo_controller.ServoController(**servo_pin_map)
+                                                              # servo_is_moving=self.servo_controller.is_moving if self.servo_controller else None,
+                                                              servo=servo_controller.ServoController(**servo_pin_map)
                                                               )
 
         self.motion_detector_web = None
