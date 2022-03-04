@@ -224,7 +224,7 @@ class MotionDetector(ThreadBase):
 
             if self.do_record:
 
-                if self.servo and self.servo.is_moving():
+                if self.servo and self.servo.is_moving() or self.servo_is_moving and self.servo_is_moving():
                     deque_observer.clear()
                     previous_frame_blur = None
                     continue
