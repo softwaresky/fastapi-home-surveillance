@@ -75,16 +75,16 @@ class ThreadController(ThreadBase):
         #                                                           )
 
         self.noise_detector = None
-        self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
-                                                           do_record=self.do_record,
-                                                           use_other_to_record=self.do_merge,
-                                                           audio_format=self.audio_format,
-                                                           observer_length=observer_length,
-                                                           threshold=noise_threshold,
-                                                           media_dir=self.media_dir)
+        # self.noise_detector = noise_detector.NoiseDetector(do_convert=False,
+        #                                                    do_record=self.do_record,
+        #                                                    use_other_to_record=self.do_merge,
+        #                                                    audio_format=self.audio_format,
+        #                                                    observer_length=observer_length,
+        #                                                    threshold=noise_threshold,
+        #                                                    media_dir=self.media_dir)
 
         self.media_file_manager = None
-        self.media_file_manager = media_file_manager.MediaFileManager()
+        # self.media_file_manager = media_file_manager.MediaFileManager()
 
         if self.dht_detector: self._lst_threads.append(self.dht_detector)
         if self.servo_controller: self._lst_threads.append(self.servo_controller)
