@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 import math
+import threading
 import time
 import datetime
 from collections import deque
@@ -67,7 +68,7 @@ class MotionDetector(ThreadBase):
         self.is_running = False
 
         self.servo = servo
-
+        self.lock = threading.Lock()
 
     def __del__(self):
 
@@ -79,6 +80,13 @@ class MotionDetector(ThreadBase):
 
         if self.video_capture:
             self.video_capture.release()
+
+    def move_servo(self, sides="", angle=None):
+
+        if self.servo:
+            self.lock.acquire()
+            self.servo.move(sides=sides, angle=angle)
+            self.lock.release()
 
 
     def get_fps(self):
