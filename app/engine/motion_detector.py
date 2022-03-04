@@ -215,11 +215,10 @@ class MotionDetector(ThreadBase):
                 break
 
             frame = self.stream.read()
-            print (type(frame))
-            full_frame = frame
-            if not isinstance(full_frame, np.ndarray):
+            if not isinstance(frame, np.ndarray):
                 continue
 
+            full_frame = frame.copy()
             self.current_timestamp = time.time()
             frame_deque.append(self.current_timestamp)
 
