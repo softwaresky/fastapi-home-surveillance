@@ -1,4 +1,5 @@
 import time
+import threading
 
 from app.engine import utils
 from app.engine.base_class import ThreadBase
@@ -70,6 +71,8 @@ class ServoController(ThreadBase):
         self.dict_servos = {"y": Servo(gpio=pan_pin, angle_steps=6),
                             "z": Servo(gpio=tilt_pin, angle_steps=6)}
 
+        self.lock = threading.Lock()
+
         for axis_ in self.dict_servos:
             self.log_manager.log(f"{axis_}: {self.dict_servos[axis_]}")
 
@@ -107,13 +110,14 @@ class ServoController(ThreadBase):
 
     def move(self, sides="", angle=None):
 
-        self._is_moving = True
-        if list(set(sides) & set(DICT_DIRECTION_MAP.keys())):
-            self.move_by_sides(sides=sides)
-        elif list(set(sides) & set(AXIS_WORLD)) and angle is not None:
-            self.move_by_axis(axis=sides, angle=angle)
-        # time.sleep(.3)
-        self._is_moving = False
+        with self.lock:
+            self._is_moving = True
+            if list(set(sides) & set(DICT_DIRECTION_MAP.keys())):
+                self.move_by_sides(sides=sides)
+            elif list(set(sides) & set(AXIS_WORLD)) and angle is not None:
+                self.move_by_axis(axis=sides, angle=angle)
+            # time.sleep(.3)
+            self._is_moving = False
 
     def get_data(self):
 
