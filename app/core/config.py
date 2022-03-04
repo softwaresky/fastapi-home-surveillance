@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     MOTION_THRESHOLD: Optional[float] = 7.0
     NOISE_THRESHOLD: Optional[float] = 1.0 # default was 0.005
     DO_RECORD: Optional[bool] = False
-    DO_MERGE: Optional[bool] = True
+    DO_MERGE: Optional[bool] = False
     VIDEO_FORMAT: Optional[str] = "mp4"
     AUDIO_FORMAT: Optional[str] = "wav"
     OBSERVER_LENGTH: Optional[int] = 5
