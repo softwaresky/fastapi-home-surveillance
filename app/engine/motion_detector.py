@@ -202,6 +202,7 @@ class MotionDetector(ThreadBase):
         self.log_manager.log("Observing...")
         frame_deque = deque(maxlen=60)
         deque_observer = deque(maxlen=self.observer_length * int(self._frame_rate))
+        frame_blur = None
         previous_frame_blur = None
         self.is_running = True
 
@@ -246,6 +247,7 @@ class MotionDetector(ThreadBase):
                 res = frame_dilated.astype(np.uint8)
                 motion_percentage = (np.count_nonzero(res) * 100) / res.size
                 deque_observer.append(motion_percentage)
+                self._value = motion_percentage
 
                 time_diff = frame_deque[-1] - frame_deque[0]
                 fps = round(len(frame_deque) / time_diff, 1) if len(frame_deque) > 0 and time_diff > 0.0 else 0.0
@@ -285,12 +287,11 @@ class MotionDetector(ThreadBase):
                 #     cv2.circle(full_frame, (frame_cx, frame_cy), 10, (0, 255, 255), 1)
                 #     cv2.rectangle(full_frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
-                self.current_frame = full_frame
-                self._value = motion_percentage
-                self.detect_motion = sum([x > self.threshold for x in deque_observer]) > 0
-                self.do_recording()
+            self.current_frame = full_frame
+            self.detect_motion = sum([x > self.threshold for x in deque_observer]) > 0
+            self.do_recording()
 
-                previous_frame_blur = frame_blur
+            previous_frame_blur = frame_blur
 
 
 
