@@ -32,6 +32,10 @@ async def move_by_axis(
         if controller.motion_detector.servo:
             controller.motion_detector.servo.move(**servo_ctrl.dict())
             data = controller.motion_detector.servo.get_data()
+        elif controller.servo_controller:
+            controller.servo_controller.move(**servo_ctrl.dict())
+            data = controller.servo_controller.get_data()
+
     except Exception as err:
         return {
             "success": "Error",
