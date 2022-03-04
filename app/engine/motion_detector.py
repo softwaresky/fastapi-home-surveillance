@@ -173,7 +173,7 @@ class MotionDetector(ThreadBase):
         return len(self.records) > 0
 
     def do_recording(self):
-        if (self.use_other_to_record and self.force_recording) or (not self.use_other_to_record and self.detect_motion):
+        if (self.use_other_to_record and self.force_recording) or (not self.use_other_to_record and self.do_record and self.detect_motion):
 
             if not self.is_recording():
                 self.start_recording()
