@@ -215,22 +215,13 @@ class MotionDetector(ThreadBase):
                 break
 
             frame = self.stream.read()
+            print (type(frame))
             full_frame = frame
             if not isinstance(full_frame, np.ndarray):
                 continue
 
             self.current_timestamp = time.time()
             frame_deque.append(self.current_timestamp)
-
-            time_diff = frame_deque[-1] - frame_deque[0]
-            fps = round(len(frame_deque) / time_diff, 1) if len(frame_deque) > 0 and time_diff > 0.0 else 0.0
-
-            video_text = "Temp: {temperature} deg. C  | Hum: {humidity}%".format(**self.dht_function()) if self.dht_function else ""
-            video_text = f"{datetime.datetime.now(): %Y-%m-%d %H:%M:%S} | {video_text} [{fps} fps]"
-
-            cv2.rectangle(full_frame, (0, 0), (self.width, 30), (0, 0, 0), -1)
-            cv2.putText(full_frame, video_text, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (255, 255, 255), 1, cv2.LINE_AA)
 
 
             if self.do_record:
@@ -284,6 +275,15 @@ class MotionDetector(ThreadBase):
                 res = frame_dilated.astype(np.uint8)
                 motion_percentage = (np.count_nonzero(res) * 100) / res.size
                 deque_observer.append(motion_percentage)
+
+                time_diff = frame_deque[-1] - frame_deque[0]
+                fps = round(len(frame_deque) / time_diff, 1) if len(frame_deque) > 0 and time_diff > 0.0 else 0.0
+                video_text = "Temp: {temperature} deg. C  | Hum: {humidity}%".format(
+                    **self.dht_function()) if self.dht_function else ""
+                video_text = f"{datetime.datetime.now(): %Y-%m-%d %H:%M:%S} | {video_text} [{fps} fps]"
+                cv2.rectangle(full_frame, (0, 0), (self.width, 30), (0, 0, 0), -1)
+                cv2.putText(full_frame, video_text, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                            (255, 255, 255), 1, cv2.LINE_AA)
 
                 self.current_frame = full_frame
 
