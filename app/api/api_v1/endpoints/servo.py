@@ -29,7 +29,7 @@ async def move_by_axis(
     data = {}
     try:
         # controller.servo_controller.move(**servo_ctrl.dict())
-        if controller.motion_detector.servo:
+        if hasattr(controller.motion_detector, "servo") and controller.motion_detector.servo:
             controller.motion_detector.servo.move(**servo_ctrl.dict())
             data = controller.motion_detector.servo.get_data()
         elif controller.servo_controller:
