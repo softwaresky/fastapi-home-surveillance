@@ -14,7 +14,7 @@ from .servo_controller import ServoController
 class MotionDetector(ThreadBase):
 
     def __init__(self,
-                 camera_source_index=0,
+                 camera_source_index: int = 0,
                  observer_length: int = 5,
                  threshold: float = 7.0,
                  force_fps: int = 24,
@@ -22,8 +22,8 @@ class MotionDetector(ThreadBase):
                  do_record: bool = False,
                  use_other_to_record: bool = False,
                  video_format: str = "mp4",
-                 dht_function=None,
-                 servo_is_moving=None,
+                 dht_function = None,
+                 servo_is_moving = None,
                  servo: ServoController = None):
 
         super(self.__class__, self).__init__()
