@@ -115,7 +115,7 @@ class ServoController(ThreadBase):
             self.move_by_sides(sides=sides)
         elif list(set(sides) & set(AXIS_WORLD)) and angle is not None:
             self.move_by_axis(axis=sides, angle=angle)
-        time.sleep(.3)
+        # time.sleep(.3)
         self._is_moving = False
         # self.lock.release()
 
