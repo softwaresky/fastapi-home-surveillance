@@ -222,7 +222,6 @@ class MotionDetector(ThreadBase):
             self.current_timestamp = time.time()
             frame_deque.append(self.current_timestamp)
 
-
             if self.do_record:
 
                 if self.servo and self.servo.is_moving():
@@ -241,11 +240,23 @@ class MotionDetector(ThreadBase):
                 frame_threshold = cv2.threshold(frame_delta, 15, 255, cv2.THRESH_BINARY)[1]
                 kernel = np.ones((5, 5), np.uint8)
                 frame_dilated = cv2.dilate(frame_threshold, kernel, iterations=4)
+                res = frame_dilated.astype(np.uint8)
+                motion_percentage = (np.count_nonzero(res) * 100) / res.size
+                deque_observer.append(motion_percentage)
 
-                frame_w = frame.shape[1]
-                frame_h = frame.shape[0]
-                frame_cx = int(frame_w / 2)
-                frame_cy = int(frame_h / 2)
+                time_diff = frame_deque[-1] - frame_deque[0]
+                fps = round(len(frame_deque) / time_diff, 1) if len(frame_deque) > 0 and time_diff > 0.0 else 0.0
+                video_text = "Temp: {temperature} deg. C  | Hum: {humidity}%".format(
+                    **self.dht_function()) if self.dht_function else ""
+                video_text = f"{datetime.datetime.now(): %Y-%m-%d %H:%M:%S} | {video_text} [{fps} fps]"
+                cv2.rectangle(full_frame, (0, 0), (self.width, 30), (0, 0, 0), -1)
+                cv2.putText(full_frame, video_text, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                            (255, 255, 255), 1, cv2.LINE_AA)
+
+                # frame_w = frame.shape[1]
+                # frame_h = frame.shape[0]
+                frame_cx = int(self.width / 2)
+                frame_cy = int(self.height / 2)
 
                 all_points = []
                 contours, hierarchy = cv2.findContours(frame_dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -265,27 +276,13 @@ class MotionDetector(ThreadBase):
                     length_y = abs(frame_cy - cnt_cy)
                     direction_y = "N" if cnt_cy < frame_cy else "S"
 
-                    print(f"{direction_x} => {(length_x / frame_cx) * 100}%, {direction_y} => {(length_y / frame_cy) * 100}%")
+                    # print(f"{direction_x} => {(length_x / frame_cx) * 100}%, {direction_y} => {(length_y / frame_cy) * 100}%")
 
                     cv2.circle(full_frame, (cnt_cx, cnt_cy), 5, (0, 0, 255), 1)
                     cv2.circle(full_frame, (frame_cx, frame_cy), 10, (0, 255, 255), 1)
                     cv2.rectangle(full_frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
-                res = frame_dilated.astype(np.uint8)
-                motion_percentage = (np.count_nonzero(res) * 100) / res.size
-                deque_observer.append(motion_percentage)
-
-                time_diff = frame_deque[-1] - frame_deque[0]
-                fps = round(len(frame_deque) / time_diff, 1) if len(frame_deque) > 0 and time_diff > 0.0 else 0.0
-                video_text = "Temp: {temperature} deg. C  | Hum: {humidity}%".format(
-                    **self.dht_function()) if self.dht_function else ""
-                video_text = f"{datetime.datetime.now(): %Y-%m-%d %H:%M:%S} | {video_text} [{fps} fps]"
-                cv2.rectangle(full_frame, (0, 0), (self.width, 30), (0, 0, 0), -1)
-                cv2.putText(full_frame, video_text, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                            (255, 255, 255), 1, cv2.LINE_AA)
-
                 self.current_frame = full_frame
-
                 self._value = motion_percentage
                 self.detect_motion = sum([x > self.threshold for x in deque_observer]) > 0
                 self.do_recording()
