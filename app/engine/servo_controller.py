@@ -110,14 +110,15 @@ class ServoController(ThreadBase):
 
     def move(self, sides="", angle=None):
 
-        with self.lock:
-            self._is_moving = True
-            if list(set(sides) & set(DICT_DIRECTION_MAP.keys())):
-                self.move_by_sides(sides=sides)
-            elif list(set(sides) & set(AXIS_WORLD)) and angle is not None:
-                self.move_by_axis(axis=sides, angle=angle)
-            # time.sleep(.3)
-            self._is_moving = False
+        self.lock.acquire()
+        self._is_moving = True
+        if list(set(sides) & set(DICT_DIRECTION_MAP.keys())):
+            self.move_by_sides(sides=sides)
+        elif list(set(sides) & set(AXIS_WORLD)) and angle is not None:
+            self.move_by_axis(axis=sides, angle=angle)
+        # time.sleep(.3)
+        self._is_moving = False
+        self.lock.release()
 
     def get_data(self):
 
