@@ -67,6 +67,9 @@ class MotionDetector(ThreadBase):
         self.is_running = False
 
         self.servo = servo
+        self.camera_center_move = 20
+        self.auto_aim = True
+
 
     def __del__(self):
 
@@ -258,34 +261,43 @@ class MotionDetector(ThreadBase):
                 cv2.putText(full_frame, video_text, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                             (255, 255, 255), 1, cv2.LINE_AA)
 
-                # # frame_w = frame.shape[1]
-                # # frame_h = frame.shape[0]
-                # frame_cx = int(self.width / 2)
-                # frame_cy = int(self.height / 2)
-                #
-                # all_points = []
-                # contours, hierarchy = cv2.findContours(frame_dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                # for cnt_ in contours:
-                #     if cv2.contourArea(cnt_) > 50:
-                #         all_points += list(cnt_)
-                #
-                # if all_points:
-                #     all_points_array = np.array(all_points)
-                #     (x, y, w, h) = cv2.boundingRect(all_points_array)
-                #
-                #     cnt_cx = int((x + w + x) / 2)
-                #     cnt_cy = int((y + h + y) / 2)
-                #
-                #     length_x = abs(frame_cx - cnt_cx)
-                #     direction_x = "E" if cnt_cx < frame_cx else "W"
-                #     length_y = abs(frame_cy - cnt_cy)
-                #     direction_y = "N" if cnt_cy < frame_cy else "S"
-                #
-                #     # print(f"{direction_x} => {(length_x / frame_cx) * 100}%, {direction_y} => {(length_y / frame_cy) * 100}%")
-                #
-                #     cv2.circle(full_frame, (cnt_cx, cnt_cy), 5, (0, 0, 255), 1)
-                #     cv2.circle(full_frame, (frame_cx, frame_cy), 10, (0, 255, 255), 1)
-                #     cv2.rectangle(full_frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                if self.auto_aim:
+                    # frame_w = frame.shape[1]
+                    # frame_h = frame.shape[0]
+                    frame_cx = int(self.width / 2)
+                    frame_cy = int(self.height / 2)
+
+                    all_points = []
+                    contours, hierarchy = cv2.findContours(frame_dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                    for cnt_ in contours:
+                        if cv2.contourArea(cnt_) > 50:
+                            all_points += list(cnt_)
+
+                    if all_points:
+                        all_points_array = np.array(all_points)
+                        (x, y, w, h) = cv2.boundingRect(all_points_array)
+
+                        cnt_cx = int((x + w + x) / 2)
+                        cnt_cy = int((y + h + y) / 2)
+
+                        length_x = abs(frame_cx - cnt_cx)
+                        length_y = abs(frame_cy - cnt_cy)
+                        angle = None
+                        side = ""
+                        if (length_x / frame_cx) * 100 > 20:
+                            angle = self.camera_center_move * (length_x / frame_cx)
+                            side = "E" if cnt_cx < frame_cx else "W"
+                        if (length_y / frame_cy) * 100 > 20:
+                            angle = self.camera_center_move * (length_y / frame_cy)
+                            side = "N" if cnt_cy < frame_cy else "S"
+
+                        if self.servo and self.auto_aim:
+                            self.servo.move(sides=side, angle=angle)
+                        # print(f"{direction_x} => {(length_x / frame_cx) * 100}%, {direction_y} => {(length_y / frame_cy) * 100}%")
+
+                        # cv2.circle(full_frame, (cnt_cx, cnt_cy), 5, (0, 0, 255), 1)
+                        # cv2.circle(full_frame, (frame_cx, frame_cy), 10, (0, 255, 255), 1)
+                        # cv2.rectangle(full_frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
             self.current_frame = full_frame
             self.detect_motion = sum([x > self.threshold for x in deque_observer]) > 0
