@@ -51,6 +51,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.on_event("startup")
+def startup_event():
+    time.sleep(1)
+    controller.start()
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    controller.stop_children_threads()
+    controller.is_running = False
+    controller.join()
+
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 

@@ -1,6 +1,10 @@
+adafruit-circuitpython-dht
 opencv-contrib-python
 PyAudio
 fastapi
 uvicorn
 aiofiles
 picamera
+gpiozero
+pigpio
+Jinja2

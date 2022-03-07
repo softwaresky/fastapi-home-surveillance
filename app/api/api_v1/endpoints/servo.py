@@ -1,51 +1,33 @@
 import pprint
 import time
 from typing import Any, Optional
-from fastapi import APIRouter, WebSocket
+from fastapi import APIRouter, WebSocket, HTTPException
+from app.engine.servo_controller import ServoController
 from app.engine.thread_controller import controller
 from app.schemas.servo import ServoUpdate
 
 
 router = APIRouter()
 
-# @router.on_event("startup")
-# def startup_router():
-#     time.sleep(1)
-#     controller.start()
-#     pass
-#
-#
-# @router.on_event("shutdown")
-# def shutdown_router():
-#     controller.stop_children_threads()    # all threads can't be stopped
-#     controller.is_running = False
-#     controller.join()
-#     pass
+def get_servo_object() -> ServoController:
+
+    if hasattr(controller.motion_detector, "servo") and controller.motion_detector.servo:
+        return controller.motion_detector.servo
+    elif controller.servo_controller:
+        return controller.servo_controller
+    else:
+        raise Exception("Missing servo controller object")
 
 @router.put("/move/")
 async def move_by_axis(
         servo_ctrl: ServoUpdate
 ) -> Any:
-    data = {}
     try:
-        # controller.servo_controller.move(**servo_ctrl.dict())
-        # controller.motion_detector.move_servo(**servo_ctrl.dict())
-        # if controller.motion_detector:
-        #     data = controller.motion_detector.servo.get_data()
-
-        if hasattr(controller.motion_detector, "servo") and controller.motion_detector.servo:
-            controller.motion_detector.servo.move(**servo_ctrl.dict())
-            data = controller.motion_detector.servo.get_data()
-        elif controller.servo_controller:
-            controller.servo_controller.move(**servo_ctrl.dict())
-            data = controller.servo_controller.get_data()
-
+        servo_object = get_servo_object()
+        await servo_object.move_async(**servo_ctrl.dict())
+        data = await servo_object.get_data()
     except Exception as err:
-        return {
-            "success": "Error",
-            "message": f"{err}",
-            "data": {}
-        }
+        raise HTTPException(status_code=404, detail=err)
 
     return {
         "success": "OK",
@@ -55,15 +37,7 @@ async def move_by_axis(
 
 @router.get("/info")
 async def get_info() -> Any:
-    data = {}
     try:
-        if controller.motion_detector.servo:
-            data = controller.motion_detector.servo.get_data()
-
+        return await get_servo_object().get_data()
     except Exception as err:
-        return {
-            "success": "Error",
-            "message": f"{err}"
-        }
-
-    return data
+        raise HTTPException(status_code=404, detail=err)

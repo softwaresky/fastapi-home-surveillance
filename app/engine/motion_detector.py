@@ -61,14 +61,14 @@ class MotionDetector(ThreadBase):
         self.stream = VideoStream(src=camera_source_index,
                                   framerate=self.force_fps,
                                   resolution=(self.width, self.height),
-                                  use_pi_camera=False)
+                                  use_pi_camera=True)
 
         self.lst_buffer_data = []
         self.is_running = False
 
         self.servo = servo
         self.camera_center_move = 20
-        self.auto_aim = True
+        self.auto_aim = False
 
 
     def __del__(self):
@@ -77,7 +77,7 @@ class MotionDetector(ThreadBase):
 
         if self.stream:
             self.stream.stop()
-            del self.stream
+            # del self.stream
 
         if self.video_capture:
             self.video_capture.release()
@@ -209,12 +209,7 @@ class MotionDetector(ThreadBase):
         previous_frame_blur = None
         self.is_running = True
 
-        # keep looping infinitely until the thread is stopped
-
         while self.is_running:
-
-            if not self.is_running:
-                break
 
             frame = self.stream.read()
             if not isinstance(frame, np.ndarray):
@@ -286,19 +281,20 @@ class MotionDetector(ThreadBase):
                         if self.servo:
                             self.servo.move(sides=side, angle=angle)
 
+
                         # print(f"{direction_x} => {(length_x / frame_cx) * 100}%, {direction_y} => {(length_y / frame_cy) * 100}%")
                         # cv2.circle(full_frame, (cnt_cx, cnt_cy), 5, (0, 0, 255), 1)
                         # cv2.circle(full_frame, (frame_cx, frame_cy), 10, (0, 255, 255), 1)
                         # cv2.rectangle(full_frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
-                time_diff = frame_deque[-1] - frame_deque[0]
-                fps = round(len(frame_deque) / time_diff, 1) if len(frame_deque) > 0 and time_diff > 0.0 else 0.0
-                video_text = "Temp: {temperature} deg. C  | Hum: {humidity}%".format(
-                    **self.dht_function()) if self.dht_function else ""
-                video_text = f"{datetime.datetime.now(): %Y-%m-%d %H:%M:%S} | {video_text} [{fps} fps]"
-                cv2.rectangle(full_frame, (0, 0), (self.width, 30), (0, 0, 0), -1)
-                cv2.putText(full_frame, video_text, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                            (255, 255, 255), 1, cv2.LINE_AA)
+            time_diff = frame_deque[-1] - frame_deque[0]
+            fps = round(len(frame_deque) / time_diff, 1) if len(frame_deque) > 0 and time_diff > 0.0 else 0.0
+            video_text = "Temp: {temperature} deg. C  | Hum: {humidity}%".format(
+                **self.dht_function()) if self.dht_function else ""
+            video_text = f"{datetime.datetime.now(): %Y-%m-%d %H:%M:%S} | {video_text} [{fps} fps]"
+            cv2.rectangle(full_frame, (0, 0), (self.width, 30), (0, 0, 0), -1)
+            cv2.putText(full_frame, video_text, (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                        (255, 255, 255), 1, cv2.LINE_AA)
 
             self.current_frame = full_frame
             self.detect_motion = sum([x > self.threshold for x in deque_observer]) > 0
